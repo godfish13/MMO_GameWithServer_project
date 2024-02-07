@@ -21,9 +21,9 @@ public abstract class UI_Base : MonoBehaviour       // 상속용 기본 base이므로 ab
         for (int i = 0; i < Names.Length; i++)
         {
             if (typeof(T) == typeof(GameObject))     // GameObject는 Monobehavior, ... 을 상속받지 않은 것이라 따로 구현하라고 오류뜸 그러므로 일반화아닌버전 사용
-                obj[i] = Utils.FindChild(gameObject, Names[i], true);           // Utils script에 만들어둔 하위 오브젝트 탐색 후 배열에 저장 메소드
+                obj[i] = Utils.FindComponentinChild(gameObject, Names[i], true);           // Utils script에 만들어둔 하위 오브젝트 탐색 후 배열에 저장 메소드
             else
-                obj[i] = Utils.FindChild<T>(gameObject, Names[i], true);
+                obj[i] = Utils.FindComponentinChild<T>(gameObject, Names[i], true);
 
             if (obj[i] == null)
                 Debug.Log($"Failed to Bind(Can't Find '{Names[i]}')");
