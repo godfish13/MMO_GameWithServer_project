@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -11,10 +12,10 @@ public class PlayerCtrl : MonoBehaviour
     public float _speed = 5.0f;
 
     [SerializeField] private Vector3Int _cellPos = Vector3Int.zero;
-    [SerializeField] private bool _isMoving = false;
+    private bool _isMoving = false;
     Animator _animator;
 
-    [SerializeField] private MoveDir _dir = MoveDir.Down;    // 초기상태가 앞을 바라보는 상태로 설정
+    private MoveDir _dir = MoveDir.Down;    // 초기상태가 앞을 바라보는 상태로 설정
     public MoveDir Dir      // 현재 상태 설정과 애니메이션을 동시에 변경되도록 프로퍼티 설정
     {
         get { return _dir; }
@@ -78,26 +79,36 @@ public class PlayerCtrl : MonoBehaviour
     {
         GetDirInput();
         UpdatePosition();
-        UpdateIsMoving();
     }
 
-    void GetDirInput()  // 방향 설정
+    void GetDirInput()  // 키 입력 시 이동방향과 도착지점 설정
     {
+        if (_isMoving == true)  // 한번에 한칸씩만 이동하고 이동 중 애니메이션 업데이트 안되도록 _isMoving 설정
+            return;
+        
         if (Input.GetKey(KeyCode.W))
         {
             Dir = MoveDir.Up;
+            _cellPos += Vector3Int.up;
+            _isMoving = true;
         }
         else if (Input.GetKey(KeyCode.S))
         {
             Dir = MoveDir.Down;
+            _cellPos += Vector3Int.down;
+            _isMoving = true;
         }
         else if (Input.GetKey(KeyCode.A))
         {
             Dir = MoveDir.Left;
+            _cellPos += Vector3Int.left;
+            _isMoving = true;
         }
         else if (Input.GetKey(KeyCode.D))
         {
             Dir = MoveDir.Right;
+            _cellPos += Vector3Int.right;
+            _isMoving = true;
         }
         else
         {
@@ -123,33 +134,6 @@ public class PlayerCtrl : MonoBehaviour
         else
         {
             transform.position += moveDir.normalized * _speed * Time.deltaTime;
-            _isMoving = true;
-        }
-    }
-
-    void UpdateIsMoving()   // Int 크기로 player 위치 변경
-    {
-        if (_isMoving == false)     // 1칸씩만 움직이고 멈추도록 bool조건 추가
-        {
-            switch (_dir)
-            {
-                case MoveDir.Up:
-                    _cellPos += Vector3Int.up;
-                    _isMoving = true;
-                    break;
-                case MoveDir.Down:
-                    _cellPos += Vector3Int.down;
-                    _isMoving = true;
-                    break;
-                case MoveDir.Left:
-                    _cellPos += Vector3Int.left;
-                    _isMoving = true;
-                    break;
-                case MoveDir.Right:
-                    _cellPos += Vector3Int.right;
-                    _isMoving = true;
-                    break;
-            }
         }
     }
 }
