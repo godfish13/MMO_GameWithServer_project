@@ -16,26 +16,27 @@ public class MapEditor
 
     // % : ctrl   # : shift  & : alt
     [MenuItem("Tools/GenerateMapCollisions %#&g")]     // 유니티 에디터 위 메뉴창에 Tools항목 만들고 하위항목으로 GenerateMap 넣어줌
-    private static void GenerateMap()    // GenerateMap의 기능 HelloWorld
+    private static void GenerateMap()    // GenerateMap의 기능
     {
         GameObject[] maps = Resources.LoadAll<GameObject>("Prefabs/Map");
 
         foreach (GameObject map in maps)
         {
+            Tilemap tmbase = Utils.FindComponentinChild<Tilemap>(map, "Tilemap_Base", true);    // base 전범위 + collision 체크
             Tilemap tm = Utils.FindComponentinChild<Tilemap>(map, "Tilemap_Collision", true);
 
             using (StreamWriter writer = File.CreateText($"Assets/Resources/Map/{map.name + "_Collisions"}.txt"))
             {
-                writer.WriteLine(tm.cellBounds.xMax);
-                writer.WriteLine(tm.cellBounds.xMin);
-                writer.WriteLine(tm.cellBounds.yMax);
-                writer.WriteLine(tm.cellBounds.yMin);
+                writer.WriteLine(tmbase.cellBounds.xMax);
+                writer.WriteLine(tmbase.cellBounds.xMin);
+                writer.WriteLine(tmbase.cellBounds.yMax);
+                writer.WriteLine(tmbase.cellBounds.yMin);
 
-                for (int y = tm.cellBounds.yMax; y >= tm.cellBounds.yMin; y--)      // 텍스트 파일로 왼쪽위->오른쪽아래 로 내려가도록 작성하기
+                for (int y = tmbase.cellBounds.yMax; y >= tmbase.cellBounds.yMin; y--)      // 텍스트 파일로 왼쪽위->오른쪽아래 로 내려가도록 작성하기
                 {
-                    for (int x = tm.cellBounds.xMin; x <= tm.cellBounds.xMax; x++)
+                    for (int x = tmbase.cellBounds.xMin; x <= tmbase.cellBounds.xMax; x++)
                     {
-                        TileBase tile = tm.GetTile(new Vector3Int(x, y, 0));
+                        TileBase tile = tm.GetTile(new Vector3Int(x, y, 0));    // collision 지형 체크
                         if (tile != null)
                             writer.Write("1");
                         else

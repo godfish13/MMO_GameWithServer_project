@@ -9,6 +9,12 @@ public class Managers : MonoBehaviour
     static Managers Mgr_Instance;     // 이 스크립트가 존재하지않을 때 다른곳에서 먼저 호출 시 init()한번 실행하여 singleton패턴의 instance 만들어줌
     public static Managers Instance { get { init(); return Mgr_Instance; } }  // 이미 존재할 경우 init()내에서 생성 스킵됨
 
+    #region Contents
+    MapMgr _mapMgr = new MapMgr();
+
+    public static MapMgr mapMgr { get { return Instance._mapMgr; } }
+    #endregion
+
     DataMgr _dataMgr = new DataMgr();
     InputMgr _inputMgr = new InputMgr();
     PoolMgr _poolMgr = new PoolMgr();
@@ -49,7 +55,7 @@ public class Managers : MonoBehaviour
             DontDestroyOnLoad(MgrObject);
             Mgr_Instance = MgrObject.GetComponent<Managers>();
 
-            Mgr_Instance._dataMgr.init();
+            //Mgr_Instance._dataMgr.init();
             Mgr_Instance._poolMgr.init();
             Mgr_Instance._soundMgr.init();
         }      

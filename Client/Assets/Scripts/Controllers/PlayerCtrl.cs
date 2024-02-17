@@ -8,7 +8,6 @@ public class PlayerCtrl : MonoBehaviour
 {
     //GameObject (Player) 부착
 
-    public Grid _grid;
     public float _speed = 5.0f;
 
     [SerializeField] private Vector3Int _cellPos = Vector3Int.zero;
@@ -70,7 +69,7 @@ public class PlayerCtrl : MonoBehaviour
 
     private void Start()
     {
-        Vector3 pos = _grid.CellToWorld(_cellPos) + new Vector3(0.5f, 0.5f);    // CellToWorld : 셀 좌표를 월드좌표로 변환해줌
+        Vector3 pos = Managers.mapMgr.CurrentGrid.CellToWorld(_cellPos) + new Vector3(0.5f, 0.5f);    // CellToWorld : 셀 좌표를 월드좌표로 변환해줌
         transform.position = pos;
         _animator = gameObject.GetComponent<Animator>();
     }
@@ -81,38 +80,47 @@ public class PlayerCtrl : MonoBehaviour
         UpdatePosition();
     }
 
+    private void LateUpdate()
+    {
+        Camera.main.transform.position = new Vector3(transform.position.x, transform.position.y, -10);
+    }
+
     void GetDirInput()  // 키 입력 시 이동방향과 도착지점 설정
     {
         if (_isMoving == true)  // 한번에 한칸씩만 이동하고 이동 중 애니메이션 업데이트 안되도록 _isMoving 설정
             return;
-        
+
+        Vector3Int destPos = _cellPos;
+
         if (Input.GetKey(KeyCode.W))
         {
             Dir = MoveDir.Up;
-            _cellPos += Vector3Int.up;
-            _isMoving = true;
+            destPos += Vector3Int.up;
         }
         else if (Input.GetKey(KeyCode.S))
         {
             Dir = MoveDir.Down;
-            _cellPos += Vector3Int.down;
-            _isMoving = true;
+            destPos += Vector3Int.down;
         }
         else if (Input.GetKey(KeyCode.A))
         {
             Dir = MoveDir.Left;
-            _cellPos += Vector3Int.left;
-            _isMoving = true;
+            destPos += Vector3Int.left;
         }
         else if (Input.GetKey(KeyCode.D))
         {
             Dir = MoveDir.Right;
-            _cellPos += Vector3Int.right;
-            _isMoving = true;
+            destPos += Vector3Int.right;
         }
         else
         {
             Dir = MoveDir.None;
+        }
+
+        if (Managers.mapMgr.CanGo(destPos))     // 이동 가능한 좌표이닞 체크 후 이동
+        {
+            _cellPos = destPos;
+            _isMoving = true;
         }
     }
 
@@ -121,7 +129,7 @@ public class PlayerCtrl : MonoBehaviour
         if (_isMoving == false)
             return;
 
-        Vector3 destpos = _grid.CellToWorld(_cellPos) + new Vector3(0.5f, 0.5f);    // CellToWorld : 셀 좌표를 월드좌표로 변환해줌
+        Vector3 destpos = Managers.mapMgr.CurrentGrid.CellToWorld(_cellPos) + new Vector3(0.5f, 0.5f);    // CellToWorld : 셀 좌표를 월드좌표로 변환해줌
         Vector3 moveDir = destpos - transform.position;
 
         // 도착 여부 체크
