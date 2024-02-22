@@ -4,6 +4,15 @@ using UnityEngine;
 
 public class Define
 {
+    public enum CreatureState
+    {
+        Idle,
+        Moving,
+        Arrived,    // 이동 중 목표지점에 도달했지만 아직 이동중일 경우 Idle애니메이션으로 업데이트 되지 않도록 설정하기 위한 임시 목표지점 도달 상태
+        Skill,
+        Dead,
+    }
+
     public enum MoveDir
     {
         None,
