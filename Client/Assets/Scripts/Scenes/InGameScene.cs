@@ -18,14 +18,14 @@ public class InGameScene : BaseScene
         {
             GameObject monster = Managers.resourceMgr.Instantiate("Creature/Monster");
             monster.name = $"Monster{i + 1}";
+            MonsterCtrl mc = monster.GetComponent<MonsterCtrl>();
 
             // 랜덤 위치 스폰
             while (true)
-            {
-                MonsterCtrl mc = monster.GetComponent<MonsterCtrl>();
+            {                
                 Vector3Int pos = new Vector3Int() { x = Random.Range(-15, 15), y = Random.Range(-5, 5) };
-                Debug.Log(pos);
-                Debug.Log(Managers.mapMgr.CanGo(pos));
+                //Debug.Log(pos);
+                //Debug.Log(Managers.mapMgr.CanGo(pos));
                 if (Managers.mapMgr.CanGo(pos) && Managers.objectMgr.SearchPos(pos) == null) // 생성위치에 Collision없고 오브젝트도 없으면 생성
                 {
                     mc.CellPos = pos;

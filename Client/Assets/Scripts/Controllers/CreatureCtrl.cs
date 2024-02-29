@@ -19,14 +19,13 @@ public class CreatureCtrl : MonoBehaviour
     public CreatureState State
     {
         get { return _state; }
-        set
+        set                         // 이동 및 스킬사용 등 상태별 애니메이션 업데이트
         {
             if (_state == value)
                 return;
 
             _state = value;
-
-            UpdateAnim();   // _state 변화 시 애니메이션 업데이트
+            UpdateAnim();
         }
     }
 
@@ -35,7 +34,7 @@ public class CreatureCtrl : MonoBehaviour
     public MoveDir Dir      // 현재 상태 설정과 애니메이션을 동시에 변경되도록 프로퍼티 설정
     {
         get { return _dir; }
-        set
+        set                         // Idle Anim 업데이트
         {
             if (_dir == value)
                 return;
@@ -97,7 +96,25 @@ public class CreatureCtrl : MonoBehaviour
         }
         else if (State == CreatureState.Skill)
         {
-            //Todo
+            switch (_lastDir)
+            {
+                case MoveDir.Up:
+                    _animator.Play("ATTACK_BACK");
+                    _spriteRenderer.flipX = false;
+                    break;
+                case MoveDir.Down:
+                    _animator.Play("ATTACK_FRONT");
+                    _spriteRenderer.flipX = false;
+                    break;
+                case MoveDir.Right:
+                    _animator.Play("ATTACK_RIGHT");
+                    _spriteRenderer.flipX = false;
+                    break;
+                case MoveDir.Left:
+                    _animator.Play("ATTACK_RIGHT");
+                    _spriteRenderer.flipX = true;  // SpriteRenderer의 flipX값으로 스프라이트 좌우반전
+                    break;
+            }
         }
         else
         {
@@ -125,13 +142,60 @@ public class CreatureCtrl : MonoBehaviour
 
     protected virtual void UpdateCtrl()
     {
-        UpdatePosition();
+        switch (State)
+        {
+            case CreatureState.Idle:
+                UpdateIdle();
+                break;
+            case CreatureState.Moving:
+                UpdateMoving();
+                break;
+            case CreatureState.Skill:
+                UpdateSkill();
+                break;
+            case CreatureState.Dead:
+                UpdateDead();
+                break;
+        }        
     }
 
-    void UpdatePosition()   // Grid 한칸씩 이동하도록 구현
+    protected virtual void UpdateIdle()
     {
-        if (State != CreatureState.Moving)
-            return;
+        if (_dir != MoveDir.None)
+        {
+            Vector3Int destPos = CellPos;
+
+            switch (_dir)
+            {
+                case MoveDir.Up:
+                    destPos += Vector3Int.up;
+                    break;
+                case MoveDir.Down:
+                    destPos += Vector3Int.down;
+                    break;
+                case MoveDir.Right:
+                    destPos += Vector3Int.right;
+                    break;
+                case MoveDir.Left:
+                    destPos += Vector3Int.left;
+                    break;
+            }
+
+            State = CreatureState.Moving;   // 벽에 막혀있는 Arrived 상태에서도 애니메이션 업데이트 가능하도록 이동키 입력받으면 일단 Moving상태 지정
+            if (Managers.mapMgr.CanGo(destPos))     // 이동 가능한 좌표인지 체크 후 이동
+            {
+                if (Managers.objectMgr.SearchPos(destPos) == null)
+                {
+                    CellPos = destPos;
+                }
+            }
+        }
+    }
+
+    protected virtual void UpdateMoving()   // Grid 한칸씩 이동하도록 구현
+    {
+        //if (State != CreatureState.Moving)    이런식으로 예외처리 하는 대신 위 UpdateCtrl에서 case에 따라 작동하도록 변경하여 관리 용이하게 함
+            //return;
 
         Vector3 destpos = Managers.mapMgr.CurrentGrid.CellToWorld(CellPos) + new Vector3(0.5f, 0.7f);    // CellToWorld : 셀 좌표를 월드좌표로 변환해줌
         Vector3 moveDir = destpos - transform.position;
@@ -141,14 +205,24 @@ public class CreatureCtrl : MonoBehaviour
         if (dist < _speed * Time.deltaTime) // 이동거리가 한번에 이동 가능한 거리보다 짧은경우 도착했다고 인정
         {
             transform.position = destpos;
-            State = CreatureState.Arrived;  // 목표지점에 도달했지만 아직 입력이 있을 경우 Arrived 상태
-            if (_dir == MoveDir.None)       // 목표지점 도달하고 입력이 없을 경우 Idle 상태로 진입
-                State = CreatureState.Idle;
+            _state = CreatureState.Idle;    // 프로퍼티로 호출이 아닌 직접 제어
+            // 프로퍼티로 Set할 경우 Moving anim실행 -> Idle 실행 -> Moving -> ... 이 되어 애니메이션이 버벅거림
+            // 이를 방지하기 위해 Idle 애니메이션은 State변화에 따라 실행하는 대신 Dir이 none으로 set된 시점에 작동하는 UpdaetAnim으로 실행
         }
         else
         {
             transform.position += moveDir.normalized * _speed * Time.deltaTime;
             State = CreatureState.Moving;
         }
+    }
+
+    protected virtual void UpdateSkill()
+    {
+
+    }
+
+    protected virtual void UpdateDead()
+    {
+
     }
 }

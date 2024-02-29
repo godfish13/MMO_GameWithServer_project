@@ -43,7 +43,7 @@ public class MapMgr
 
         CurrentGrid = go.GetComponent<Grid>();
 
-        // Collsion 包访 颇老 
+        // Collision 包访 颇老 
         TextAsset txt = Managers.resourceMgr.Load<TextAsset>($"Map/{mapName}_Collisions");
         StringReader reader = new StringReader(txt.text);
 
