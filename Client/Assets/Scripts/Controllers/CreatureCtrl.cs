@@ -10,7 +10,8 @@ public class CreatureCtrl : MonoBehaviour
 
     public float _speed = 5.0f;
 
-    [SerializeField] protected private Vector3Int _cellPos = Vector3Int.zero;
+    [SerializeField] private Vector3Int _cellPos = Vector3Int.zero; // 단축해서 CellPos get set만쓰면 serializeField써도 inspector내에서 관찰이 안됨 그래서 굳이 또 써줌
+    public Vector3Int CellPos { get { return _cellPos; } set { _cellPos = value; } }
     protected Animator _animator;
     protected SpriteRenderer _spriteRenderer;
 
@@ -116,7 +117,7 @@ public class CreatureCtrl : MonoBehaviour
 
     protected virtual void Init()
     {
-        Vector3 pos = Managers.mapMgr.CurrentGrid.CellToWorld(_cellPos) + new Vector3(0.5f, 0.7f);    // CellToWorld : 셀 좌표를 월드좌표로 변환해줌
+        Vector3 pos = Managers.mapMgr.CurrentGrid.CellToWorld(CellPos) + new Vector3(0.5f, 0.7f);    // CellToWorld : 셀 좌표를 월드좌표로 변환해줌
         transform.position = pos;
         _animator = gameObject.GetComponent<Animator>();
         _spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
@@ -132,7 +133,7 @@ public class CreatureCtrl : MonoBehaviour
         if (State != CreatureState.Moving)
             return;
 
-        Vector3 destpos = Managers.mapMgr.CurrentGrid.CellToWorld(_cellPos) + new Vector3(0.5f, 0.7f);    // CellToWorld : 셀 좌표를 월드좌표로 변환해줌
+        Vector3 destpos = Managers.mapMgr.CurrentGrid.CellToWorld(CellPos) + new Vector3(0.5f, 0.7f);    // CellToWorld : 셀 좌표를 월드좌표로 변환해줌
         Vector3 moveDir = destpos - transform.position;
 
         // 도착 여부 체크

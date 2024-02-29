@@ -14,9 +14,9 @@ public class PlayerCtrl : CreatureCtrl
     }
 
     protected override void UpdateCtrl()
-    {
-        GetDirInput();
+    {        
         base.UpdateCtrl();
+        GetDirInput();
     }
 
     private void LateUpdate()
@@ -29,7 +29,7 @@ public class PlayerCtrl : CreatureCtrl
         if (State == CreatureState.Moving)  // 이동중이 아니면 입력을 못받게 설정
             return;
 
-        Vector3Int destPos = _cellPos;
+        Vector3Int destPos = CellPos;
 
         if (Input.GetKey(KeyCode.W))
         {
@@ -58,7 +58,10 @@ public class PlayerCtrl : CreatureCtrl
 
         if (Managers.mapMgr.CanGo(destPos))     // 이동 가능한 좌표인지 체크 후 이동
         {
-            _cellPos = destPos;
+            if (Managers.objectMgr.SearchPos(destPos) == null)
+            {
+                CellPos = destPos;
+            }
         }
         State = CreatureState.Moving;   // 벽에 막혀있는 Arrived 상태에서도 애니메이션 업데이트 가능하도록 이동키 입력받으면 일단 Moving상태 지정
     }

@@ -11,10 +11,13 @@ public class Managers : MonoBehaviour
 
     #region Contents
     MapMgr _mapMgr = new MapMgr();
+    ObjectMgr _objectMgr = new ObjectMgr();
 
     public static MapMgr mapMgr { get { return Instance._mapMgr; } }
+    public static ObjectMgr objectMgr { get { return Instance._objectMgr; } }
     #endregion
 
+    #region Core
     DataMgr _dataMgr = new DataMgr();
     InputMgr _inputMgr = new InputMgr();
     PoolMgr _poolMgr = new PoolMgr();
@@ -30,6 +33,7 @@ public class Managers : MonoBehaviour
     public static SceneMgrEx sceneMgrEx { get { return Instance._sceneMgrEx; } }
     public static SoundMgr soundMgr { get { return Instance._soundMgr; } }
     public static UIMgr UIMgr { get { return Instance._UIMgr; } }
+    #endregion
 
     void Start()
     {
