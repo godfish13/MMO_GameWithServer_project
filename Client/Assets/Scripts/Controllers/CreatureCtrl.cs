@@ -48,6 +48,29 @@ public class CreatureCtrl : MonoBehaviour
         }
     }
 
+    public Vector3Int GetFrontCellPos()
+    {
+        Vector3Int cellPos = CellPos;
+
+        switch (_lastDir)
+        {
+            case MoveDir.Up:
+                cellPos += Vector3Int.up;
+                break;
+            case MoveDir.Down:
+                cellPos += Vector3Int.down;
+                break;
+            case MoveDir.Right:
+                cellPos += Vector3Int.right;
+                break;
+            case MoveDir.Left:
+                cellPos += Vector3Int.left;
+                break;
+        }
+
+        return cellPos;
+    }
+
     protected void UpdateAnim()
     {
         if (State == CreatureState.Idle)

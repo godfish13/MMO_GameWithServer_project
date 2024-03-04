@@ -8,6 +8,8 @@ public class PlayerCtrl : CreatureCtrl
 {
     //GameObject (Player) 부착
 
+    Coroutine _coSkill;
+
     protected override void Init()
     {
         base.Init();
@@ -60,6 +62,24 @@ public class PlayerCtrl : CreatureCtrl
     void GetIdleInput()
     {
         if (Input.GetKey(KeyCode.Space))
+        {
             State = CreatureState.Skill;
+            _coSkill = StartCoroutine("coPunchSkill");
+        }         
+    }
+
+    IEnumerator coPunchSkill()
+    {
+        // 피격 판정
+        GameObject go = Managers.objectMgr.SearchPos(GetFrontCellPos());
+        if (go != null)
+        {
+            Debug.Log(go.name);
+        }
+
+        // 대기 시간
+        yield return new WaitForSeconds(0.3f);
+        State = CreatureState.Idle;
+        _coSkill = null;
     }
 }
