@@ -4,6 +4,12 @@ using UnityEngine;
 
 public class Define
 {
+    public enum Skills
+    {
+        Punch,
+        ArrowShot,
+    }
+
     public enum CreatureState
     {
         Idle,

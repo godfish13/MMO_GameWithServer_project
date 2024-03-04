@@ -29,8 +29,8 @@ public class CreatureCtrl : MonoBehaviour
         }
     }
 
-    [SerializeField] private MoveDir _dir = MoveDir.Down;    // 초기상태가 앞을 바라보는 상태로 설정
-    private MoveDir _lastDir = MoveDir.Down;    // 순전히 Idle Anim 재생 방향을 결정하기 위해 마지막으로 바라본 방향 저장용
+    [SerializeField] protected MoveDir _dir = MoveDir.Down;    // 초기상태가 앞을 바라보는 상태로 설정
+    protected MoveDir _lastDir = MoveDir.Down;    // 순전히 Idle Anim 재생 방향을 결정하기 위해 마지막으로 바라본 방향 저장용
     public MoveDir Dir      // 현재 상태 설정과 애니메이션을 동시에 변경되도록 프로퍼티 설정
     {
         get { return _dir; }
@@ -71,7 +71,7 @@ public class CreatureCtrl : MonoBehaviour
         return cellPos;
     }
 
-    protected void UpdateAnim()
+    protected virtual void UpdateAnim()   // Arrow 등 Animation이 없는 Ctrl에서 내용물 없게 override 할 수 있도록 virtual로 선언
     {
         if (State == CreatureState.Idle)
         {
