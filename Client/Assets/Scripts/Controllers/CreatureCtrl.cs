@@ -248,4 +248,9 @@ public class CreatureCtrl : MonoBehaviour
     {
 
     }
+
+    public virtual void OnDamaged()
+    {
+        
+    }
 }

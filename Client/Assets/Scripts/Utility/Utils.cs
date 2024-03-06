@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using System;
+using System.Threading.Tasks;
 
 public class Utils
 {
@@ -50,5 +52,10 @@ public class Utils
         }
 
         return null;
+    }
+
+    public static async void Timer(float time)     // time초만큼 대기
+    {
+        await Task.Delay(TimeSpan.FromSeconds(time));
     }
 }

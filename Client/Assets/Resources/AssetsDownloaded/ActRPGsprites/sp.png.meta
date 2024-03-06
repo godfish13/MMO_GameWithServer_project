@@ -1850,7 +1850,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 15.9
+  spritePixelsToUnits: 16
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -1869,6 +1869,30 @@ TextureImporter:
   platformSettings:
   - serializedVersion: 3
     buildTarget: DefaultTexturePlatform
+    maxTextureSize: 1024
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Standalone
+    maxTextureSize: 1024
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Server
     maxTextureSize: 1024
     resizeAlgorithm: 0
     textureFormat: -1
@@ -14677,9 +14701,9 @@ TextureImporter:
       sp_532: 21301064
       sp_116: 21300232
       sp_282: 21300564
-      sp_295: 21300590
       sp_461: 21300922
       sp_581: 21301162
+      sp_295: 21300590
       sp_142: 21300284
       sp_278: 21300556
       sp_280: 21300560
@@ -14828,13 +14852,13 @@ TextureImporter:
       sp_230: 21300460
       sp_291: 21300582
       sp_37: 21300074
-      sp_134: 21300268
-      sp_364: 21300728
       sp_368: 21300736
-      sp_580: 21301160
+      sp_134: 21300268
       sp_389: 21300778
-      sp_82: 21300164
+      sp_580: 21301160
       sp_490: 21300980
+      sp_82: 21300164
+      sp_364: 21300728
       sp_397: 21300794
       sp_536: 21301072
       sp_240: 21300480

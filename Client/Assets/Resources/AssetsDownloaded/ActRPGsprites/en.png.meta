@@ -1271,7 +1271,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 15.9
+  spritePixelsToUnits: 16
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -1290,6 +1290,30 @@ TextureImporter:
   platformSettings:
   - serializedVersion: 3
     buildTarget: DefaultTexturePlatform
+    maxTextureSize: 1024
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Standalone
+    maxTextureSize: 1024
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Server
     maxTextureSize: 1024
     resizeAlgorithm: 0
     textureFormat: -1
@@ -9982,8 +10006,8 @@ TextureImporter:
       en_199: 21300398
       en_255: 21300510
       en_109: 21300218
-      en_134: 21300268
       en_265: 21300530
+      en_134: 21300268
       en_82: 21300164
       en_86: 21300172
       en_395: 21300790
@@ -10004,37 +10028,37 @@ TextureImporter:
       en_76: 21300152
       en_145: 21300290
       en_155: 21300310
-      en_248: 21300496
       en_330: 21300660
+      en_248: 21300496
       en_53: 21300106
       en_240: 21300480
       en_57: 21300114
       en_392: 21300784
       en_98: 21300196
-      en_236: 21300472
       en_388: 21300776
+      en_236: 21300472
       en_339: 21300678
       en_153: 21300306
       en_165: 21300330
       en_342: 21300684
       en_304: 21300608
       en_27: 21300054
-      en_133: 21300266
       en_235: 21300470
+      en_318: 21300636
       en_114: 21300228
       en_8: 21300016
       en_65: 21300130
       en_362: 21300724
       en_220: 21300440
-      en_318: 21300636
+      en_383: 21300766
+      en_133: 21300266
       en_291: 21300582
       en_197: 21300394
-      en_383: 21300766
       en_289: 21300578
       en_218: 21300436
       en_135: 21300270
-      en_212: 21300424
       en_325: 21300650
+      en_212: 21300424
       en_125: 21300250
       en_90: 21300180
       en_168: 21300336
@@ -10179,11 +10203,11 @@ TextureImporter:
       en_368: 21300736
       en_337: 21300674
       en_13: 21300026
-      en_152: 21300304
+      en_385: 21300770
       en_111: 21300222
+      en_152: 21300304
       en_162: 21300324
       en_79: 21300158
-      en_385: 21300770
       en_269: 21300538
       en_144: 21300288
       en_405: 21300810
@@ -10215,8 +10239,8 @@ TextureImporter:
       en_51: 21300102
       en_66: 21300132
       en_163: 21300326
-      en_244: 21300488
       en_379: 21300758
+      en_244: 21300488
       en_143: 21300286
       en_341: 21300682
       en_288: 21300576

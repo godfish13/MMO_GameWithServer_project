@@ -19,4 +19,16 @@ public class MonsterCtrl : CreatureCtrl
     {
         base.UpdateCtrl();
     }
+
+    public override void OnDamaged()
+    {
+        GameObject de = Managers.resourceMgr.Instantiate("Effect/DeathBoom");   // ÀÌÆåÆ® Àç»ý
+        de.transform.position = transform.position;
+        de.GetComponent<Animator>().Play("DeathBoom");
+        Managers.resourceMgr.Destroy(de, 0.4f);
+
+        // »ç¸Á ¤Ì¤Ì
+        Managers.objectMgr.Remove(gameObject);
+        Managers.resourceMgr.Destroy(gameObject);
+    }
 }

@@ -204,6 +204,12 @@ public class PlayerCtrl : CreatureCtrl
         if (go != null)
         {
             Debug.Log(go.name);
+
+            CreatureCtrl cc = go.GetComponent<CreatureCtrl>();
+            if (cc != null)
+            {
+                cc.OnDamaged();
+            }
         }
 
         // 대기 시간

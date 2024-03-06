@@ -767,7 +767,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 15.9
+  spritePixelsToUnits: 16
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -786,6 +786,30 @@ TextureImporter:
   platformSettings:
   - serializedVersion: 3
     buildTarget: DefaultTexturePlatform
+    maxTextureSize: 1024
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Standalone
+    maxTextureSize: 1024
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Server
     maxTextureSize: 1024
     resizeAlgorithm: 0
     textureFormat: -1
@@ -5929,8 +5953,8 @@ TextureImporter:
       pa_178: 21300356
       pa_29: 21300058
       pa_35: 21300070
-      pa_180: 21300360
       pa_189: 21300378
+      pa_180: 21300360
       pa_8: 21300016
       pa_134: 21300268
       pa_218: 21300436
@@ -6001,16 +6025,16 @@ TextureImporter:
       pa_145: 21300290
       pa_238: 21300476
       pa_75: 21300150
-      pa_57: 21300114
-      pa_202: 21300404
       pa_78: 21300156
       pa_208: 21300416
+      pa_57: 21300114
       pa_215: 21300430
       pa_93: 21300186
+      pa_202: 21300404
       pa_19: 21300038
-      pa_102: 21300204
       pa_166: 21300332
       pa_196: 21300392
+      pa_102: 21300204
       pa_59: 21300118
       pa_207: 21300414
       pa_46: 21300092

@@ -66,7 +66,14 @@ public class ArrowCtrl : CreatureCtrl
                 {
                     // 피격판정
                     Debug.Log(go.name);
-                    Managers.resourceMgr.Destroy(gameObject);
+
+                    CreatureCtrl cc = go.GetComponent<CreatureCtrl>();
+                    if (cc != null)
+                    {
+                        cc.OnDamaged();
+                    }
+
+                    Managers.resourceMgr.Destroy(gameObject);   // 화살 삭제
                 }
             }
             else

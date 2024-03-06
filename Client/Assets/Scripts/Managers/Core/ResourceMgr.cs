@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class ResourceMgr
 {
+    
     public T Load<T>(string path) where T : Object  // 오브젝트 관련 메소드들을 여러곳에서 산개하여 작성하면 어디서 무엇을 어떻게 쓰는지 찾기 점점 어려워짐
     {                                               // 따라서 추적하기 쉽게하기위해 ResourceMgr을 통하도록 Load, Destroy등 각 메소드들 Wrapping 해둠
         if(typeof(T) == typeof(GameObject))
@@ -59,9 +60,18 @@ public class ResourceMgr
     {
         if (go == null)
             return;
-        
+
         // 만약 Pooling할 객체일 시 풀링 매니저에 위탁
+        Poolable poolable = go.GetComponent<Poolable>();    // Poolable이면 pool에 넣어둠
+        if (poolable != null)
+        {
+            Utils.Timer(time);
+            Managers.poolMgr.Push(poolable);
+            return;
+        }
 
         Object.Destroy(go, time);
     }
+
+    
 }
