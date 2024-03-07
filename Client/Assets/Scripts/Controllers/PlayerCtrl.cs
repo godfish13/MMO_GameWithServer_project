@@ -8,12 +8,14 @@ using static Define;
 public class PlayerCtrl : CreatureCtrl
 {
     //GameObject (Player) 부착
+    private bool CanReceiveInput = true;
 
     Coroutine _coSkill;
     public Define.Skills currentSkill = Skills.Punch;
 
     protected override void Init()
     {
+        yoffset = 0.7f;
         base.Init();
     }
 
@@ -125,10 +127,9 @@ public class PlayerCtrl : CreatureCtrl
         {
             case CreatureState.Idle:
                 GetDirInput();
-                GetIdleInput();
-                ChangeSkillInput();
                 break;
             case CreatureState.Moving:
+                GetDirInput();
                 break;
         }
     }
@@ -138,32 +139,17 @@ public class PlayerCtrl : CreatureCtrl
         Camera.main.transform.position = new Vector3(transform.position.x, transform.position.y, -10);
     }
 
-    void GetDirInput()  // 키 입력 시 상태 지정
+    protected override void UpdateIdle()
     {
-        if (Input.GetKey(KeyCode.W))
+        #region Moving direction
+        if (Dir != MoveDir.None)
         {
-            Dir = MoveDir.Up;   
+            State = CreatureState.Moving;
+            return;
         }
-        else if (Input.GetKey(KeyCode.S))
-        {
-            Dir = MoveDir.Down;
-        }
-        else if (Input.GetKey(KeyCode.A))
-        {
-            Dir = MoveDir.Left;
-        }
-        else if (Input.GetKey(KeyCode.D))
-        {
-            Dir = MoveDir.Right;
-        }       
-        else
-        {
-            Dir = MoveDir.None;
-        }
-    }
+        #endregion
 
-    void GetIdleInput()
-    {
+        #region Skills
         switch (currentSkill)
         {
             case Skills.Punch:
@@ -180,20 +166,42 @@ public class PlayerCtrl : CreatureCtrl
                     _coSkill = StartCoroutine("coArrowSkill");
                 }
                 break;
-        }         
-    }
+        }
 
-    void ChangeSkillInput()
-    {
-        if (Input.GetKeyDown(KeyCode.Q))
+        if (Input.GetKeyDown(KeyCode.Q))        // 스킬 모드 전환 주먹 - 화살 - ...
         {
             if (currentSkill > Skills.Punch)
-                currentSkill -= 1;        
+                currentSkill -= 1;
         }
         else if (Input.GetKeyDown(KeyCode.E))
         {
             if (currentSkill < Skills.ArrowShot)
                 currentSkill += 1;
+        }
+        #endregion
+    }
+
+    void GetDirInput()  // 키 입력 시 상태 지정
+    {
+        if (Input.GetKey(KeyCode.W))
+        {
+            Dir = MoveDir.Up;
+        }
+        else if (Input.GetKey(KeyCode.S))
+        {
+            Dir = MoveDir.Down;
+        }
+        else if (Input.GetKey(KeyCode.A))
+        {
+            Dir = MoveDir.Left;
+        }
+        else if (Input.GetKey(KeyCode.D))
+        {
+            Dir = MoveDir.Right;
+        }       
+        else
+        {
+            Dir = MoveDir.None;
         }
     }
 

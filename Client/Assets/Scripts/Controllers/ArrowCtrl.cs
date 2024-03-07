@@ -24,6 +24,9 @@ public class ArrowCtrl : CreatureCtrl
                 break;
         }
 
+        State = CreatureState.Moving;
+        _speed = 10.0f;
+
         base.Init();
     }
 
@@ -32,54 +35,51 @@ public class ArrowCtrl : CreatureCtrl
         // No Animation
     }
 
-    protected override void UpdateIdle()
+    protected override void CalculateDestPos()
     {
-        if (_dir != MoveDir.None)
+        Vector3Int destPos = CellPos;
+
+        switch (_dir)
         {
-            Vector3Int destPos = CellPos;
+            case MoveDir.Up:
+                destPos += Vector3Int.up;
+                break;
+            case MoveDir.Down:
+                destPos += Vector3Int.down;
+                break;
+            case MoveDir.Right:
+                destPos += Vector3Int.right;
+                break;
+            case MoveDir.Left:
+                destPos += Vector3Int.left;
+                break;
+        }
 
-            switch (_dir)
+        if (Managers.mapMgr.CanGo(destPos))     // 이동 가능한 좌표인지 체크 후 이동
+        {
+            GameObject go = Managers.objectMgr.SearchPos(destPos);
+            if (go == null)
             {
-                case MoveDir.Up:
-                    destPos += Vector3Int.up;
-                    break;
-                case MoveDir.Down:
-                    destPos += Vector3Int.down;
-                    break;
-                case MoveDir.Right:
-                    destPos += Vector3Int.right;
-                    break;
-                case MoveDir.Left:
-                    destPos += Vector3Int.left;
-                    break;
-            }
-
-            State = CreatureState.Moving;   // 벽에 막혀있는 Arrived 상태에서도 애니메이션 업데이트 가능하도록 이동키 입력받으면 일단 Moving상태 지정
-            if (Managers.mapMgr.CanGo(destPos))     // 이동 가능한 좌표인지 체크 후 이동
-            {
-                GameObject go = Managers.objectMgr.SearchPos(destPos);
-                if (go == null)
-                {
-                    CellPos = destPos;
-                }
-                else
-                {
-                    // 피격판정
-                    Debug.Log(go.name);
-
-                    CreatureCtrl cc = go.GetComponent<CreatureCtrl>();
-                    if (cc != null)
-                    {
-                        cc.OnDamaged();
-                    }
-
-                    Managers.resourceMgr.Destroy(gameObject);   // 화살 삭제
-                }
+                CellPos = destPos;
             }
             else
             {
-                Managers.resourceMgr.Destroy(gameObject);
+                // 피격판정
+                Debug.Log(go.name);
+
+                CreatureCtrl cc = go.GetComponent<CreatureCtrl>();
+                if (cc != null)
+                {
+                    cc.OnDamaged();
+                }
+
+                Managers.resourceMgr.Destroy(gameObject);   // 화살 삭제
             }
         }
+        else
+        {
+            Managers.resourceMgr.Destroy(gameObject);
+        }
+        
     }
 }

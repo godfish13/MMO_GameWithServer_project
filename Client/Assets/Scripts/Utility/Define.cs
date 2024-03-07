@@ -16,6 +16,7 @@ public class Define
         Moving,
         Skill,
         Dead,
+        DontChangeAnim,
     }
 
     public enum MoveDir
