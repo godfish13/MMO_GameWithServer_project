@@ -31,8 +31,8 @@ public class CreatureCtrl : MonoBehaviour
         }
     }
 
-    [SerializeField] protected MoveDir _dir = MoveDir.Down;    // 초기상태가 앞을 바라보는 상태로 설정
     protected MoveDir _lastDir = MoveDir.Down;    // 순전히 Idle Anim 재생 방향을 결정하기 위해 마지막으로 바라본 방향 저장용
+    [SerializeField] protected MoveDir _dir = MoveDir.Down;    // 초기상태가 앞을 바라보는 상태로 설정  
     public MoveDir Dir      // 현재 상태 설정과 애니메이션을 동시에 변경되도록 프로퍼티 설정
     {
         get { return _dir; }
@@ -44,7 +44,7 @@ public class CreatureCtrl : MonoBehaviour
             _dir = value;
 
             if (value != MoveDir.None)  // 마지막으로 바라본 방향 기록
-                _lastDir = _dir;
+                _lastDir = value;
 
             UpdateAnim();   // _dir 변화 시 애니메이션 업데이트
         }
@@ -194,15 +194,15 @@ public class CreatureCtrl : MonoBehaviour
         //if (State != CreatureState.Moving)    이런식으로 예외처리 하는 대신 위 UpdateCtrl에서 case에 따라 작동하도록 변경하여 관리 용이하게 함
             //return;
 
-        Vector3 destpos = Managers.mapMgr.CurrentGrid.CellToWorld(CellPos) + new Vector3(0.5f, yoffset);    // CellToWorld : 셀 좌표를 월드좌표로 변환해줌
-        Vector3 moveDir = destpos - transform.position;       
+        Vector3 destPos = Managers.mapMgr.CurrentGrid.CellToWorld(CellPos) + new Vector3(0.5f, yoffset);    // CellToWorld : 셀 좌표를 월드좌표로 변환해줌
+        Vector3 moveDir = destPos - transform.position;       
 
         // 도착 여부 체크
         float dist = moveDir.magnitude;
         if (dist < _speed * Time.deltaTime) // 이동거리가 한번에 이동 가능한 거리보다 짧은경우 도착했다고 인정
         {           
-            transform.position = destpos;
-            CalculateDestPos();             // 입력된 키에 따른 다음 목표 지점 지정 
+            transform.position = destPos;
+            CalculateDestPos();             // 입력된 키에 따른 다음 목표 지점 지정           
         }
         else
         {
