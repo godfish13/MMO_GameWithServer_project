@@ -177,7 +177,7 @@ public class MapMgr
                     continue;
 
                 // 비용 계산
-                int g = 0;// node.G + _cost[i]; // 상하좌우 모두 같은 비용으로 움직이므로 그냥 0으로 설정
+                int g = 10;// node.G + _cost[i]; // 상하좌우 모두 같은 비용으로 움직이므로 그냥 0으로 설정
                 int h = 10 * ((dest.Y - next.Y) * (dest.Y - next.Y) + (dest.X - next.X) * (dest.X - next.X));
                 // 다른 경로에서 더 빠른 길 이미 찾았으면 스킵
                 if (open[next.Y, next.X] < g + h)

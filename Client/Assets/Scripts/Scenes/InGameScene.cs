@@ -16,8 +16,19 @@ public class InGameScene : BaseScene
 
         for (int i = 0; i < 5; i++)
         {
-            GameObject monster = Managers.resourceMgr.Instantiate("Creature/Monster");
-            monster.name = $"Monster{i + 1}";
+            GameObject monster = null;
+            if (Random.Range(0,2) == 0 ? true : false)
+            {
+                monster = Managers.resourceMgr.Instantiate("Creature/Monster");
+                monster.name = $"Monster{i + 1}";
+                monster.GetComponent<MonsterCtrl>().isRange = false;
+            }
+            else
+            {
+                monster = Managers.resourceMgr.Instantiate("Creature/Monster_Range");
+                monster.name = $"Monster{i + 1}";
+                monster.GetComponent<MonsterCtrl>().isRange = true;
+            }
             MonsterCtrl mc = monster.GetComponent<MonsterCtrl>();
 
             // 랜덤 위치 스폰

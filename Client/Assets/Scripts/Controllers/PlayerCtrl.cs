@@ -242,4 +242,9 @@ public class PlayerCtrl : CreatureCtrl
         State = CreatureState.Idle;
         _coSkill = null;
     }
+
+    public override void OnDamaged()
+    {
+        Debug.Log("Player Hitted!");
+    }
 }

@@ -50,6 +50,20 @@ public class CreatureCtrl : MonoBehaviour
         }
     }
 
+    public MoveDir GetDirfromVector(Vector3Int dir)
+    {
+        if (dir.y > 0)
+            return MoveDir.Up;
+        else if (dir.y < 0)
+            return MoveDir.Down;
+        else if (dir.x > 0)
+            return MoveDir.Right;
+        else if (dir.x < 0)
+            return MoveDir.Left;
+        else
+            return MoveDir.None;
+    }
+
     public Vector3Int GetFrontCellPos()
     {
         Vector3Int cellPos = CellPos;
