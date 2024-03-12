@@ -10,7 +10,7 @@ public class InGameScene : BaseScene
         SceneType = Define.Scene.InGame;
         Managers.mapMgr.LoadMap(1);
 
-        GameObject player = Managers.resourceMgr.Instantiate("Creature/Player");
+        /*GameObject player = Managers.resourceMgr.Instantiate("Creature/Player");
         player.name = "Player";
         Managers.objectMgr.Add(player);
 
@@ -44,7 +44,7 @@ public class InGameScene : BaseScene
                     break;
                 }
             }
-        }
+        }*/
     }
 
 

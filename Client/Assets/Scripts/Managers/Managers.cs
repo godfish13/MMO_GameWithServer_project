@@ -12,9 +12,11 @@ public class Managers : MonoBehaviour
     #region Contents
     MapMgr _mapMgr = new MapMgr();
     ObjectMgr _objectMgr = new ObjectMgr();
+    NetworkMgr _networkMgr = new NetworkMgr();
 
     public static MapMgr mapMgr { get { return Instance._mapMgr; } }
     public static ObjectMgr objectMgr { get { return Instance._objectMgr; } }
+    public static NetworkMgr networkMgr { get { return Instance._networkMgr; } }
     #endregion
 
     #region Core
@@ -42,7 +44,8 @@ public class Managers : MonoBehaviour
 
     void Update()
     {
-        _inputMgr.UpdateWhenanyKey();   // anyKey가 눌리면 Update 작동
+        //_inputMgr.UpdateWhenanyKey();   // anyKey가 눌리면 Update 작동
+        _networkMgr.Update();
     }
 
     static void init()          //singleton 패턴
@@ -59,7 +62,8 @@ public class Managers : MonoBehaviour
             DontDestroyOnLoad(MgrObject);
             Mgr_Instance = MgrObject.GetComponent<Managers>();
 
-            //Mgr_Instance._dataMgr.init();
+            Mgr_Instance._networkMgr.Init();
+            //Mgr_Instance._dataMgr.init();     // Json 따로 안만들어놨으므로 지금 당장 사용안하게 아웃시켜둠
             Mgr_Instance._poolMgr.init();
             Mgr_Instance._soundMgr.init();
         }      

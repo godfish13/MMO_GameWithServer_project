@@ -1,8 +1,12 @@
 {
   "version": 2,
-  "dgSpecHash": "EDkujwjpeOU71pxJ7IQUUFnqc/09nOmnhgpMkTuxUOhtz6z3VTOON5snbDK9FCNsvxrNJglA+ogQK5u2GI8ysg==",
+  "dgSpecHash": "jLdlSskkUAPpDyqiDPl3qYvh2ErRsFGh7SvGxKhJqs7PRFXJ6bFLH93Y2Ly0hCxFYAkYKrpuoFfc7476NzvzLw==",
   "success": true,
-  "projectFilePath": "C:\\Unity_Server\\Server Base\\ServerCore\\ServerCore.csproj",
-  "expectedPackageFiles": [],
+  "projectFilePath": "C:\\Unity_Projects\\MMO_GameWithServer_project\\Server\\ServerCore\\ServerCore.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\gustk\\.nuget\\packages\\microsoft.windowsdesktop.app.ref\\3.1.0\\microsoft.windowsdesktop.app.ref.3.1.0.nupkg.sha512",
+    "C:\\Users\\gustk\\.nuget\\packages\\microsoft.netcore.app.ref\\3.1.0\\microsoft.netcore.app.ref.3.1.0.nupkg.sha512",
+    "C:\\Users\\gustk\\.nuget\\packages\\microsoft.aspnetcore.app.ref\\3.1.10\\microsoft.aspnetcore.app.ref.3.1.10.nupkg.sha512"
+  ],
   "logs": []
 }
