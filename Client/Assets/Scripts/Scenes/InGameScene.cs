@@ -10,6 +10,8 @@ public class InGameScene : BaseScene
         SceneType = Define.Scene.InGame;
         Managers.mapMgr.LoadMap(1);
 
+        Screen.SetResolution(640, 480, false); // 화면 크기 설정 (가로크기, 세로크기, 전체화면여부)
+
         /*GameObject player = Managers.resourceMgr.Instantiate("Creature/Player");
         player.name = "Player";
         Managers.objectMgr.Add(player);

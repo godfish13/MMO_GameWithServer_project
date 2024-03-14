@@ -15,6 +15,20 @@ namespace Server
 	{
 		public int SessionId { get; set; }
 
+		public void Send(IMessage packet)
+		{
+			string MsgName = packet.Descriptor.Name.Replace("_", string.Empty); // Descriptor.Name : 패킷의 이름 꺼내옴 / "_"는 실제 실행시 무시되기때문에 없애줌
+			MsgId msgId = (MsgId)Enum.Parse(typeof(MsgId), MsgName);	// Enum.Parse(Type, string) : string과 같은 이름을 지닌 Type을 뱉어줌
+
+            ushort size = (ushort)packet.CalculateSize();
+            byte[] sendBuffer = new byte[size + 4];	// 제일 앞에 패킷크기, 다음에 패킷 Id 넣어줄 공간 4byte(ushort 2개) 추가
+            Array.Copy(BitConverter.GetBytes(size + 4), 0, sendBuffer, 0, sizeof(ushort));	// 패킷 크기
+            Array.Copy(BitConverter.GetBytes((ushort)msgId), 0, sendBuffer, 2, sizeof(ushort));	// 패킷 Id
+            Array.Copy(packet.ToByteArray(), 0, sendBuffer, 4, size);						// 패킷 내용
+
+            Send(new ArraySegment<byte>(sendBuffer));
+        }
+
 		public override void OnConnected(EndPoint endPoint)
 		{
 			Console.WriteLine($"OnConnected : {endPoint}");
@@ -22,28 +36,16 @@ namespace Server
 			// PROTO Test
 			S_Chat chat = new S_Chat()
 			{
-				Context = "안녕하세요"
+				Context = "Welcome, Unity!"
 			};
 
-			ushort size = (ushort)chat.CalculateSize();
-			byte[] sendBuffer = new byte[size + 4];
-			Array.Copy(BitConverter.GetBytes(size + 4), 0, sendBuffer, 0, sizeof(ushort));
-			ushort protocolId = (ushort)MsgId.SChat;
-			Array.Copy(BitConverter.GetBytes(protocolId), 0, sendBuffer, 2, sizeof(ushort));
-			Array.Copy(chat.ToByteArray(), 0, sendBuffer, 4, size);
-
-			Send(new ArraySegment<byte>(sendBuffer));
-
-			//S_Chat chat2 = new S_Chat();
-			//chat2.MergeFrom(sendBuffer, 4, sendBuffer.Length - 4);
-			//////////////////////////
-			//////////////////////////
-			//Program.Room.Push(() => Program.Room.Enter(this));
+			Send(chat);			
 		}
 
 		public override void OnRecvPacket(ArraySegment<byte> buffer)
 		{
 			PacketManager.Instance.OnRecvPacket(this, buffer);
+			Console.WriteLine(buffer);
 		}
 
 		public override void OnDisconnected(EndPoint endPoint)
