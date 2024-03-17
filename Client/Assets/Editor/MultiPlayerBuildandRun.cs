@@ -40,7 +40,7 @@ public class MultiPlayerBuildandRun
     static string GetProjectName()
     {
         string[] s = Application.dataPath.Split('/');
-        return s[s.Length - 2];
+        return s[s.Length - 2];     // 프로젝트명 (MMO_GameWithServer_Project) 반환
     } // 이 프로젝트의 경로를 받아오고 '/'마다 절단해서 순서대로 넣어줌
       // 결과값 : s[0] = C:, s[1] = Unity_Projects, s[2] = MMO_GameWithServer_Project, s[3] = Client, s[4] = Assets
 
