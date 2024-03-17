@@ -9,7 +9,10 @@ public class CreatureCtrl : MonoBehaviour
 {
     // Player, Monster, etc ... ctrl base class
 
-    public float _speed = 5.0f;
+    [SerializeField] private int _id;
+    public int Id { get { return _id; } set { _id = value; } }
+
+    protected float _speed = 5.0f;
     protected float yoffset = 0.5f;   // Cell 칸 중앙에 스프라이트 위치가 맞도록 개별로 지정 
 
     [SerializeField] private Vector3Int _cellPos = Vector3Int.zero; // 단축해서 CellPos get set만쓰면 serializeField써도 inspector내에서 관찰이 안됨 그래서 굳이 또 써줌

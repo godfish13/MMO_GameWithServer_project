@@ -136,7 +136,7 @@ public class MonsterCtrl : CreatureCtrl
         Managers.resourceMgr.Destroy(de, 0.4f);
 
         // »ç¸Á ¤Ì¤Ì
-        Managers.objectMgr.Remove(gameObject);
+        Managers.objectMgr.Remove(Id);
         Managers.resourceMgr.Destroy(gameObject);
     }
 

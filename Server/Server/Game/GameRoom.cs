@@ -27,8 +27,9 @@ namespace Server.InGame
                     S_EnterGame enterPacket = new S_EnterGame();    // player 본인의 Info 전송
                     enterPacket.Player = newPlayer.info;
                     newPlayer.mySession.Send(enterPacket);
-                    S_Spawn spawnPacket = new S_Spawn();
-                    foreach (Player p in _players)  // 자신은 제외하고 현재 GameRoom에 입장해있는 플레이어들 정보 전송
+
+                    S_Spawn spawnPacket = new S_Spawn(); // 자신은 제외하고 현재 GameRoom에 입장해있는 플레이어들 정보 전송
+                    foreach (Player p in _players)  
                     {
                         if (newPlayer != p)
                             spawnPacket.PlayerList.Add(p.info);
@@ -39,10 +40,10 @@ namespace Server.InGame
 
                 #region 타인한테 자신이 입장했다고 데이터 전송
                 {
-                    S_Spawn spawnPacket = new S_Spawn();
+                    S_Spawn spawnPacket = new S_Spawn();    // 타 플레이어들에게 newPlayer입장사실 전달
                     spawnPacket.PlayerList.Add(newPlayer.info);
 
-                    foreach (Player player in _players) // 타 플레이어들에게 newPlayer입장사실 전달
+                    foreach (Player player in _players) 
                     {
                         if (newPlayer != player)
                             player.mySession.Send(spawnPacket);

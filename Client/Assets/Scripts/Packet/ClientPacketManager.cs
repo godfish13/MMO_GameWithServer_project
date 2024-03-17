@@ -19,6 +19,9 @@ class PacketManager
 	Dictionary<ushort, Action<PacketSession, ArraySegment<byte>, ushort>> _onRecv = new Dictionary<ushort, Action<PacketSession, ArraySegment<byte>, ushort>>();
 	Dictionary<ushort, Action<PacketSession, IMessage>> _handler = new Dictionary<ushort, Action<PacketSession, IMessage>>();
 		
+	public Action<PacketSession, IMessage, ushort> CustomHandler4Client { get; set; }	 
+	// 유니티 내에서 메인스레드 외 다른 스레드에서 오브젝트에 접근이 불가함으로 이를 해결하기 위해 PacketQueue 활용하기위한 Handler 추가
+
 	public void Register()
 	{		
 		_onRecv.Add((ushort)MsgId.SEnterGame, MakePacket<S_EnterGame>);
@@ -51,9 +54,17 @@ class PacketManager
 	{
 		T pkt = new T();
 		pkt.MergeFrom(buffer.Array, buffer.Offset + 4, buffer.Count - 4);
-		Action<PacketSession, IMessage> action = null;
-		if (_handler.TryGetValue(id, out action))
-			action.Invoke(session, pkt);
+
+		if (CustomHandler4Client != null)
+		{
+			CustomHandler4Client.Invoke(session, pkt, id);
+		}
+		else
+		{
+            Action<PacketSession, IMessage> action = null;
+            if (_handler.TryGetValue(id, out action))
+                action.Invoke(session, pkt);
+        }
 	}
 
 	public Action<PacketSession, IMessage> GetPacketHandler(ushort id)

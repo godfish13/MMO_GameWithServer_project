@@ -12,11 +12,9 @@ public class InGameScene : BaseScene
 
         Screen.SetResolution(640, 480, false); // 화면 크기 설정 (가로크기, 세로크기, 전체화면여부)
 
-        /*GameObject player = Managers.resourceMgr.Instantiate("Creature/Player");
-        player.name = "Player";
-        Managers.objectMgr.Add(player);
-
-        for (int i = 0; i < 5; i++)
+        
+        // 몬스터 생성
+        /*for (int i = 0; i < 5; i++)
         {
             GameObject monster = null;
             if (Random.Range(0,2) == 0 ? true : false)
