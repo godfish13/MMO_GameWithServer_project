@@ -8,11 +8,14 @@ using ServerCore;
 using System.Net;
 using Google.Protobuf.Protocol;
 using Google.Protobuf;
+using Server.InGame;
+using System.Diagnostics;
 
 namespace Server
 {
-	class ClientSession : PacketSession
+	public class ClientSession : PacketSession
 	{
+		public Player myPlayer { get; set; }	// 이 Session을 가진 Player
 		public int SessionId { get; set; }
 
 		public void Send(IMessage packet)
@@ -22,25 +25,30 @@ namespace Server
 
             ushort size = (ushort)packet.CalculateSize();
             byte[] sendBuffer = new byte[size + 4];	// 제일 앞에 패킷크기, 다음에 패킷 Id 넣어줄 공간 4byte(ushort 2개) 추가
-            Array.Copy(BitConverter.GetBytes(size + 4), 0, sendBuffer, 0, sizeof(ushort));	// 패킷 크기
+            Array.Copy(BitConverter.GetBytes((ushort)(size + 4)), 0, sendBuffer, 0, sizeof(ushort));	// 패킷 크기 // GetBytes(ushort)로 쬐꼼이라도 성능향상...
             Array.Copy(BitConverter.GetBytes((ushort)msgId), 0, sendBuffer, 2, sizeof(ushort));	// 패킷 Id
             Array.Copy(packet.ToByteArray(), 0, sendBuffer, 4, size);						// 패킷 내용
 
-            Send(new ArraySegment<byte>(sendBuffer));
+            Send(new ArraySegment<byte>(sendBuffer));		
         }
 
 		public override void OnConnected(EndPoint endPoint)
 		{
 			Console.WriteLine($"OnConnected : {endPoint}");
 
-			// PROTO Test
-			S_Chat chat = new S_Chat()
-			{
-				Context = "Welcome, Unity!"
-			};
+			myPlayer = PlayerMgr.Instance.Add();    // 플레이어 목록에 연결된 플레이어 넣고 자신과 연결된 플레이어 기록
 
-			Send(chat);			
-		}
+            #region 플레이어 정보 입력
+            {
+                myPlayer.info.Name = $"Player_{myPlayer.info.PlayerId}";
+                myPlayer.info.PosX = 0;
+                myPlayer.info.PosY = 0;
+				myPlayer.mySession = this;
+            }
+            #endregion           
+            RoomMgr.Instance.Find(1).EnterGame(myPlayer);
+            Console.WriteLine($"{myPlayer.info.Name} has entered to GameRoom_{RoomMgr.Instance.Find(1).RoomId}");
+        }
 
 		public override void OnRecvPacket(ArraySegment<byte> buffer)
 		{
@@ -52,7 +60,8 @@ namespace Server
 		{
 			SessionManager.Instance.Remove(this);
 
-			Console.WriteLine($"OnDisconnected : {endPoint}");
+            RoomMgr.Instance.Find(1).LeaveGame(myPlayer.info.PlayerId);
+            Console.WriteLine($"OnDisconnected : {endPoint}");
 		}
 
 		public override void OnSend(int numOfBytes)

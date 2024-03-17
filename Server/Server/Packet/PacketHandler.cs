@@ -8,11 +8,10 @@ using System.Text;
 
 class PacketHandler
 {
-	public static void C_ChatHandler(PacketSession session, IMessage packet)
+	public static void C_MoveHandler(PacketSession session, IMessage packet)
 	{
-		S_Chat chatPacket = packet as S_Chat;
-		ClientSession serverSession = session as ClientSession;
+        C_Move movePacket = packet as C_Move;
+		ClientSession clientSession = session as ClientSession;
 
-		Console.WriteLine(chatPacket.Context);
 	}
 }
