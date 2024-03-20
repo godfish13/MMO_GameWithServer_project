@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using static Define;
+using Google.Protobuf.Protocol;
 
 public class PlayerCtrl : CreatureCtrl
 {
@@ -45,7 +46,7 @@ public class PlayerCtrl : CreatureCtrl
         }
         else if (State == CreatureState.Moving)
         {
-            switch (_dir)
+            switch (Dir)
             {
                 case MoveDir.Up:
                     _animator.Play("WALK_BACK");

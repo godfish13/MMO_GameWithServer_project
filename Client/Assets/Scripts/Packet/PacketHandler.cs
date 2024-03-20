@@ -11,7 +11,7 @@ class PacketHandler
 	{
 		S_EnterGame enterGamePacket = packet as S_EnterGame;
 
-        Managers.objectMgr.Add(enterGamePacket.Player, MyCtrl: true);
+        Managers.objectMgr.Add(enterGamePacket.Player, myCtrl: true);
 
         Debug.Log("S_EnterGameHandler");
         Debug.Log(enterGamePacket.Player);
@@ -29,7 +29,7 @@ class PacketHandler
 
         foreach (PlayerInfo player in spawnPacket.PlayerList)
         {
-            Managers.objectMgr.Add(player, MyCtrl: false);
+            Managers.objectMgr.Add(player, myCtrl: false);
         }
     }
 
@@ -44,9 +44,17 @@ class PacketHandler
 
     public static void S_MoveHandler(PacketSession session, IMessage packet)
     {
-        S_LeaveGame movePacket = packet as S_LeaveGame;
+        S_Move movePacket = packet as S_Move;
         ServerSession serverSession = session as ServerSession;
 
-        Debug.Log("S_MoveHandler");
+        GameObject go = Managers.objectMgr.FindGameObjectbyId(movePacket.PlayerId);
+        if (go == null)
+            return;
+
+        CreatureCtrl cc = go.GetComponent<CreatureCtrl>();
+        if (cc == null)
+            return;
+
+        cc.PosInfo = movePacket.PosInfo;
     }
 }

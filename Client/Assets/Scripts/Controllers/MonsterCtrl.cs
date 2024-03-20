@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using static Define;
+using Google.Protobuf.Protocol;
 
 public class MonsterCtrl : CreatureCtrl
 {
@@ -21,10 +22,10 @@ public class MonsterCtrl : CreatureCtrl
 
     public override CreatureState State
     {
-        get { return _state; }
+        get { return PosInfo.State; }
         set                         // 이동 및 스킬사용 등 상태별 애니메이션 업데이트
         {
-            if (_state == value)
+            if (PosInfo.State == value)
                 return;
 
             base.State = value;

@@ -1,3 +1,4 @@
+using Google.Protobuf.Protocol;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
@@ -12,44 +13,76 @@ public class CreatureCtrl : MonoBehaviour
     [SerializeField] private int _id;
     public int Id { get { return _id; } set { _id = value; } }
 
+    [SerializeField] private Vector3Int _CellPosition = new Vector3Int();
+
+
     protected float _speed = 5.0f;
     protected float yoffset = 0.5f;   // Cell 칸 중앙에 스프라이트 위치가 맞도록 개별로 지정 
 
-    [SerializeField] private Vector3Int _cellPos = Vector3Int.zero; // 단축해서 CellPos get set만쓰면 serializeField써도 inspector내에서 관찰이 안됨 그래서 굳이 또 써줌
-    public Vector3Int CellPos { get { return _cellPos; } set { _cellPos = value; } }
-    protected Animator _animator;
-    protected SpriteRenderer _spriteRenderer;
+    protected bool _updated = false;  // 더티 플래그 : 실제로 업데이트 되었는지 체크하기 위해 둔 변수
+                                      // C_Move를 보내는 조건으로 CellPos, State, Dir이 변했는지 체크하기 위해 설정
 
-    [SerializeField] protected CreatureState _state = CreatureState.Idle;
-    public virtual CreatureState State
+    private PositionInfo _positionInfo = new PositionInfo();
+    public PositionInfo PosInfo             // PositionInfo에 State, Dir, X, Y 정보 모두 담겨있으므로 이걸로 일원화
     {
-        get { return _state; }
-        set                         // 이동 및 스킬사용 등 상태별 애니메이션 업데이트
+        get { return _positionInfo; } 
+        set
         {
-            if (_state == value)
+            if (_positionInfo.Equals(value))    // positionInfo에 변화가 생길때만 Set
                 return;
 
-            _state = value;
-            UpdateAnim();
+            State = value.State;        // _lastDir 갱신등이 씹히는 문제 해결하기위해 _positionInfo를 통으로 처리하는 대신 각자 값 넣어주도록 변경
+            Dir = value.MoveDir;
+            CellPos = new Vector3Int(value.PosX, value.PosY, 0);
         }
     }
 
-    protected MoveDir _lastDir = MoveDir.Down;    // 순전히 Idle Anim 재생 방향을 결정하기 위해 마지막으로 바라본 방향 저장용
-    [SerializeField] protected MoveDir _dir = MoveDir.Down;    // 초기상태가 앞을 바라보는 상태로 설정  
+    public Vector3Int CellPos 
+    {
+        get { return new Vector3Int(PosInfo.PosX, PosInfo.PosY, 0); } 
+        set 
+        {
+            if (PosInfo.PosX == value.x && PosInfo.PosY == value.y)
+                return;
+            PosInfo.PosX = value.x; 
+            PosInfo.PosY = value.y;
+            _updated = true;
+        } 
+    }
+
+    protected Animator _animator;
+    protected SpriteRenderer _spriteRenderer;
+
+    public virtual CreatureState State
+    {
+        get { return PosInfo.State; }
+        set                         // 이동 및 스킬사용 등 상태별 애니메이션 업데이트
+        {
+            if (PosInfo.State == value)
+                return;
+
+            PosInfo.State = value;
+            UpdateAnim();
+            _updated = true;
+        }
+    }
+
+    protected MoveDir _lastDir;    // 순전히 Idle Anim 재생 방향을 결정하기 위해 마지막으로 바라본 방향 저장용
     public MoveDir Dir      // 현재 상태 설정과 애니메이션을 동시에 변경되도록 프로퍼티 설정
     {
-        get { return _dir; }
+        get { return PosInfo.MoveDir; }
         set                         // Idle Anim 업데이트
         {
-            if (_dir == value)
+            if (PosInfo.MoveDir == value)
                 return;
-            
-            _dir = value;
+
+            PosInfo.MoveDir = value;
 
             if (value != MoveDir.None)  // 마지막으로 바라본 방향 기록
                 _lastDir = value;
 
             UpdateAnim();   // _dir 변화 시 애니메이션 업데이트
+            _updated = true;
         }
     }
 
@@ -116,7 +149,7 @@ public class CreatureCtrl : MonoBehaviour
         }        
         else if (State == CreatureState.Moving)
         {
-            switch (_dir) 
+            switch (Dir) 
             {
                 case MoveDir.Up:
                     _animator.Play("WALK_BACK");
@@ -180,6 +213,11 @@ public class CreatureCtrl : MonoBehaviour
         transform.position = pos;
         _animator = gameObject.GetComponent<Animator>();
         _spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
+
+        State = CreatureState.Idle;
+        Dir = MoveDir.None;
+        CellPos = new Vector3Int(0, 0, 0);
+        UpdateAnim();
     }
 
     protected virtual void UpdateCtrl()
@@ -230,37 +268,7 @@ public class CreatureCtrl : MonoBehaviour
 
     protected virtual void CalculateDestPos()   // 입력된 키에 따른 다음 목표 지점 지정 
     {
-        if (_dir == MoveDir.None)
-        {
-            State = CreatureState.Idle;
-            return;
-        }
-
-        Vector3Int destPos = CellPos;
-
-        switch (_dir)
-        {
-            case MoveDir.Up:
-                destPos += Vector3Int.up;
-                break;
-            case MoveDir.Down:
-                destPos += Vector3Int.down;
-                break;
-            case MoveDir.Right:
-                destPos += Vector3Int.right;
-                break;
-            case MoveDir.Left:
-                destPos += Vector3Int.left;
-                break;
-        }
-
-        if (Managers.mapMgr.CanGo(destPos))     // 이동 가능한 좌표인지 체크 후 이동
-        {
-            if (Managers.objectMgr.SearchPos(destPos) == null)
-            {
-                CellPos = destPos;
-            }           
-        } 
+        
     }
 
     protected virtual void UpdateSkill()

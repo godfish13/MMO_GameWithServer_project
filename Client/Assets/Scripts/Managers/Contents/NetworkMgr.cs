@@ -10,9 +10,9 @@ public class NetworkMgr
 {
     ServerSession _session = new ServerSession();
 
-    public void Send(ArraySegment<byte> sendBuff)
+    public void Send(IMessage packet)
     {
-        _session.Send(sendBuff);
+        _session.Send(packet);
     }
 
     public void Init()

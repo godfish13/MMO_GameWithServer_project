@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Google.Protobuf.Protocol;
+using Google.Protobuf;
+using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
@@ -10,7 +12,21 @@ namespace ServerCore
 {
 	public abstract class PacketSession : Session
 	{
-		public static readonly int HeaderSize = 2;
+        public void Send(IMessage packet)
+        {
+            string MsgName = packet.Descriptor.Name.Replace("_", string.Empty); // Descriptor.Name : 패킷의 이름 꺼내옴 / "_"는 실제 실행시 무시되기때문에 없애줌
+            MsgId msgId = (MsgId)Enum.Parse(typeof(MsgId), MsgName);	// Enum.Parse(Type, string) : string과 같은 이름을 지닌 Type을 뱉어줌
+
+            ushort size = (ushort)packet.CalculateSize();
+            byte[] sendBuffer = new byte[size + 4];	// 제일 앞에 패킷크기, 다음에 패킷 Id 넣어줄 공간 4byte(ushort 2개) 추가
+            Array.Copy(BitConverter.GetBytes((ushort)(size + 4)), 0, sendBuffer, 0, sizeof(ushort));	// 패킷 크기 // GetBytes(ushort)로 쬐꼼이라도 성능향상...
+            Array.Copy(BitConverter.GetBytes((ushort)msgId), 0, sendBuffer, 2, sizeof(ushort));	// 패킷 Id
+            Array.Copy(packet.ToByteArray(), 0, sendBuffer, 4, size);						// 패킷 내용
+
+            Send(new ArraySegment<byte>(sendBuffer));
+        }
+
+        public static readonly int HeaderSize = 2;
 
 		// [size(2)][packetId(2)][ ... ][size(2)][packetId(2)][ ... ]
 		public sealed override int OnRecv(ArraySegment<byte> buffer)
@@ -101,9 +117,9 @@ namespace ServerCore
 				if (_pendingList.Count == 0)
 					RegisterSend();
 			}
-		}
+		}      
 
-		public void Disconnect()
+        public void Disconnect()
 		{
 			if (Interlocked.Exchange(ref _disconnected, 1) == 1)
 				return;

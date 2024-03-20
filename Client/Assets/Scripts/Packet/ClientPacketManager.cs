@@ -20,7 +20,7 @@ class PacketManager
 	Dictionary<ushort, Action<PacketSession, IMessage>> _handler = new Dictionary<ushort, Action<PacketSession, IMessage>>();
 		
 	public Action<PacketSession, IMessage, ushort> CustomHandler4Client { get; set; }	 
-	// 유니티 내에서 메인스레드 외 다른 스레드에서 오브젝트에 접근이 불가함으로 이를 해결하기 위해 PacketQueue 활용하기위한 Handler 추가
+	// 유니티 내에서 메인스레드 외 Debug사용이 불가함으로 이를 해결하기 위해 PacketQueue 활용하기위한 Handler 추가
 
 	public void Register()
 	{		

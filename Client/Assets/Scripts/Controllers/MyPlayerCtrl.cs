@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using static Define;
+using Google.Protobuf.Protocol;
 
 public class MyPlayerCtrl : PlayerCtrl
 {
@@ -94,5 +95,54 @@ public class MyPlayerCtrl : PlayerCtrl
         {
             Dir = MoveDir.None;
         }
+    }
+
+    protected override void CalculateDestPos()   // C_Move Packet 생성하고 보내기
+    {
+        if (Dir == MoveDir.None)
+        {
+            State = CreatureState.Idle;
+            CheckUpdatedFlag();         // Idle state로 변하더라도 C_Move pkt 보낼 수 있도록 여기에 예외적으로 추가
+            return;
+        }
+
+        Vector3Int destPos = CellPos;
+
+        switch (Dir)
+        {
+            case MoveDir.Up:
+                destPos += Vector3Int.up;
+                break;
+            case MoveDir.Down:
+                destPos += Vector3Int.down;
+                break;
+            case MoveDir.Right:
+                destPos += Vector3Int.right;
+                break;
+            case MoveDir.Left:
+                destPos += Vector3Int.left;
+                break;
+        }
+
+        if (Managers.mapMgr.CanGo(destPos))     // 이동 가능한 좌표인지 체크 후 이동
+        {
+            if (Managers.objectMgr.SearchPos(destPos) == null)
+            {
+                CellPos = destPos;
+            }
+        }
+
+        CheckUpdatedFlag();     // _updated 플래그에 의해 C_Move 발송
+    }
+
+    void CheckUpdatedFlag()
+    {
+        if (_updated == true)
+        {
+            C_Move movePacket = new C_Move();
+            movePacket.PosInfo = base.PosInfo;  // 가시성 base
+            Managers.networkMgr.Send(movePacket);
+            _updated = false;
+        }       
     }
 }

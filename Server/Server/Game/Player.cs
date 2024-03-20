@@ -7,7 +7,7 @@ namespace Server.InGame
 {
     public class Player
     {
-        public PlayerInfo info {  get; set; } = new PlayerInfo();
+        public PlayerInfo info {  get; set; } = new PlayerInfo() { PosInfo = new PositionInfo() };
         public GameRoom myRoom { get; set; }    //플레이어가 현재 속해있는 GameRoom
         public ClientSession mySession { get; set; }
     }

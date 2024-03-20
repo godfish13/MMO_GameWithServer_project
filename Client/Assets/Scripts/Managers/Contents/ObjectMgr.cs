@@ -11,9 +11,9 @@ public class ObjectMgr
     Dictionary<int, GameObject> _objects = new Dictionary<int, GameObject>();
     // playerId, player
 
-    public void Add(PlayerInfo info, bool MyCtrl = false) // MyCtrl : 내가 조종하는지 아닌지 체크
+    public void Add(PlayerInfo info, bool myCtrl = false) // MyCtrl : 내가 조종하는지 아닌지 체크
     {
-        if (MyCtrl == true)
+        if (myCtrl == true)
         {
             GameObject go = Managers.resourceMgr.Instantiate("Creature/MyPlayer");
             go.name = info.Name;
@@ -21,7 +21,7 @@ public class ObjectMgr
 
             myPlayerCtrl = go.GetComponent<MyPlayerCtrl>();
             myPlayerCtrl.Id = info.PlayerId;
-            myPlayerCtrl.CellPos = new Vector3Int(info.PosX, info.PosY, 0);
+            myPlayerCtrl.PosInfo = info.PosInfo;
         }
         else
         {
@@ -31,7 +31,7 @@ public class ObjectMgr
 
             PlayerCtrl pc = go.GetComponent<PlayerCtrl>();
             pc.Id = info.PlayerId;
-            pc.CellPos = new Vector3Int(info.PosX, info.PosY, 0);
+            pc.PosInfo = info.PosInfo;
         }
     }
 
@@ -44,14 +44,14 @@ public class ObjectMgr
         myPlayerCtrl = null;
     }
 
-    public void Add(int Id, GameObject go)
-    {
-        _objects.Add(Id, go);
-    }
-
     public void Remove(int Id) 
     {
+        GameObject go = FindGameObjectbyId(Id);
+        if (go == null)
+            return;
+        
         _objects.Remove(Id);
+        Managers.resourceMgr.Destroy(go);
     }
 
     public GameObject SearchPos(Vector3Int cellPos) // 입력한 Cell position에 cc오브젝트가 있으면 해당 오브젝트를 return
@@ -82,8 +82,19 @@ public class ObjectMgr
         return null;
     }
 
+    public GameObject FindGameObjectbyId(int id)
+    {
+        GameObject go = null;
+        _objects.TryGetValue(id, out go);
+        return go;
+    }
+
     public void Clear()
     {
+        foreach (GameObject obj in _objects.Values)
+        {
+            Managers.resourceMgr.Destroy(obj);
+        }
         _objects.Clear();
     }
 }

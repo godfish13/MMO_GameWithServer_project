@@ -36,14 +36,16 @@ namespace Server
 		{
 			Console.WriteLine($"OnConnected : {endPoint}");
 
-			myPlayer = PlayerMgr.Instance.Add();    // 플레이어 목록에 연결된 플레이어 넣고 자신과 연결된 플레이어 기록
+			myPlayer = PlayerMgr.Instance.Add();    // 플레이어 목록에 접속한 플레이어 넣고 자신이 대변하는 플레이어 기록
 
             #region 플레이어 정보 입력
             {
                 myPlayer.info.Name = $"Player_{myPlayer.info.PlayerId}";
-                myPlayer.info.PosX = 0;
-                myPlayer.info.PosY = 0;
-				myPlayer.mySession = this;
+                myPlayer.info.PosInfo.State = CreatureState.Idle;
+				myPlayer.info.PosInfo.MoveDir = MoveDir.None;
+				myPlayer.info.PosInfo.PosX = 0;
+				myPlayer.info.PosInfo.PosY = 0;
+                myPlayer.mySession = this;
             }
             #endregion           
             RoomMgr.Instance.Find(1).EnterGame(myPlayer);

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using static Define;
+using Google.Protobuf.Protocol;
 
 public class ArrowCtrl : CreatureCtrl
 {
@@ -39,7 +40,7 @@ public class ArrowCtrl : CreatureCtrl
     {
         Vector3Int destPos = CellPos;
 
-        switch (_dir)
+        switch (Dir)
         {
             case MoveDir.Up:
                 destPos += Vector3Int.up;

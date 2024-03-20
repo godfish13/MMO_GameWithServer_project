@@ -10,24 +10,6 @@ public class Define
         ArrowShot,
     }
 
-    public enum CreatureState
-    {
-        Idle,
-        Moving,
-        Skill,
-        Dead,
-        DontChangeAnim,
-    }
-
-    public enum MoveDir
-    {
-        None,
-        Up,
-        Down,
-        Left,
-        Right,
-    }
-
     public enum Layer
     {
         Monster = 6,
