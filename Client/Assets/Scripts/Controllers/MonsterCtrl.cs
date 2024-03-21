@@ -212,7 +212,7 @@ public class MonsterCtrl : CreatureCtrl
     {
         GameObject go = Managers.resourceMgr.Instantiate("Creature/Rock");
         ArrowCtrl ac = go.GetComponent<ArrowCtrl>();
-        ac.Dir = _lastDir;
+        ac.Dir = PosInfo.LastDir;
         ac.CellPos = CellPos;
 
         // 피격판정은 ArrowCtrl에서 관리

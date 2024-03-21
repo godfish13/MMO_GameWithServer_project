@@ -32,6 +32,7 @@ public class ObjectMgr
             PlayerCtrl pc = go.GetComponent<PlayerCtrl>();
             pc.Id = info.PlayerId;
             pc.PosInfo = info.PosInfo;
+            Debug.Log($"{go.name}, Id : {pc.Id}, lastDir : {pc.LastDir}");
         }
     }
 

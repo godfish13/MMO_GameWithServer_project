@@ -14,6 +14,7 @@ class PacketHandler
 		ClientSession clientSession = session as ClientSession;
 
 		Console.WriteLine($"C_Move ({movePacket.PosInfo.PosX}, {movePacket.PosInfo.PosY})");
+		Console.WriteLine($"LastDir : {movePacket.PosInfo.LastDir}");
 
 		if (clientSession.myPlayer == null)
 			return;

@@ -9,7 +9,7 @@ public class ArrowCtrl : CreatureCtrl
     protected override void Init()
     {
         // 화살 방향 설정
-        switch (_lastDir)
+        switch (PosInfo.LastDir)
         {
             case MoveDir.Up:
                 transform.rotation = Quaternion.Euler(0, 0, 0);

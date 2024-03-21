@@ -9,6 +9,8 @@ public class MyPlayerCtrl : PlayerCtrl
     protected override void Init()
     {
         base.Init();
+        LastDir = MoveDir.Down;     // 이미 생성되어있던 플레이어 캐릭터들은 LastDir이 변경된채로 생성되도록 내버려두고
+                                    // 처음 생성되는 플레이어블 플레이어 오브젝트만 LastDir 초기화 
     }
 
     protected override void UpdateCtrl()

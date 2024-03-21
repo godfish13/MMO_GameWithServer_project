@@ -75,4 +75,5 @@ message PositionInfo
 	MoveDir moveDir = 2;
 	int32 posX = 3;
 	int32 posY = 4;
+	MoveDir lastDir = 5;
 }

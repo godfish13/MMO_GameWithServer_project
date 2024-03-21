@@ -13,9 +13,6 @@ public class CreatureCtrl : MonoBehaviour
     [SerializeField] private int _id;
     public int Id { get { return _id; } set { _id = value; } }
 
-    [SerializeField] private Vector3Int _CellPosition = new Vector3Int();
-
-
     protected float _speed = 5.0f;
     protected float yoffset = 0.5f;   // Cell 칸 중앙에 스프라이트 위치가 맞도록 개별로 지정 
 
@@ -31,9 +28,10 @@ public class CreatureCtrl : MonoBehaviour
             if (_positionInfo.Equals(value))    // positionInfo에 변화가 생길때만 Set
                 return;
 
-            State = value.State;        // _lastDir 갱신등이 씹히는 문제 해결하기위해 _positionInfo를 통으로 처리하는 대신 각자 값 넣어주도록 변경
+            State = value.State;        // LastDir 갱신등이 씹히는 문제 해결하기위해 _positionInfo를 통으로 처리하는 대신 각자 값 넣어주도록 변경
             Dir = value.MoveDir;
             CellPos = new Vector3Int(value.PosX, value.PosY, 0);
+            LastDir = value.LastDir;
         }
     }
 
@@ -67,7 +65,19 @@ public class CreatureCtrl : MonoBehaviour
         }
     }
 
-    protected MoveDir _lastDir;    // 순전히 Idle Anim 재생 방향을 결정하기 위해 마지막으로 바라본 방향 저장용
+    //protected MoveDir _lastDir;    // 순전히 Idle Anim 재생 방향을 결정하기 위해 마지막으로 바라본 방향 저장용
+    public MoveDir LastDir
+    {
+        get { return PosInfo.LastDir; }
+        set
+        {
+            if (PosInfo.LastDir == value)
+                return;
+
+            PosInfo.LastDir = value;
+        }
+    }
+
     public MoveDir Dir      // 현재 상태 설정과 애니메이션을 동시에 변경되도록 프로퍼티 설정
     {
         get { return PosInfo.MoveDir; }
@@ -79,7 +89,7 @@ public class CreatureCtrl : MonoBehaviour
             PosInfo.MoveDir = value;
 
             if (value != MoveDir.None)  // 마지막으로 바라본 방향 기록
-                _lastDir = value;
+                PosInfo.LastDir = value;
 
             UpdateAnim();   // _dir 변화 시 애니메이션 업데이트
             _updated = true;
@@ -104,7 +114,7 @@ public class CreatureCtrl : MonoBehaviour
     {
         Vector3Int cellPos = CellPos;
 
-        switch (_lastDir)
+        switch (PosInfo.LastDir)
         {
             case MoveDir.Up:
                 cellPos += Vector3Int.up;
@@ -127,7 +137,7 @@ public class CreatureCtrl : MonoBehaviour
     {
         if (State == CreatureState.Idle)
         {
-            switch (_lastDir)
+            switch (PosInfo.LastDir)
             {
                 case MoveDir.Up:
                     _animator.Play("IDLE_BACK");
@@ -171,7 +181,7 @@ public class CreatureCtrl : MonoBehaviour
         }
         else if (State == CreatureState.Skill)
         {
-            switch (_lastDir)
+            switch (PosInfo.LastDir)
             {
                 case MoveDir.Up:
                     _animator.Play("ATTACK_BACK");

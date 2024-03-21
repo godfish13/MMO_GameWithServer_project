@@ -24,7 +24,7 @@ public class PlayerCtrl : CreatureCtrl
     {
         if (State == CreatureState.Idle)
         {
-            switch (_lastDir)
+            switch (PosInfo.LastDir)
             {
                 case MoveDir.Up:
                     _animator.Play("IDLE_BACK");
@@ -71,7 +71,7 @@ public class PlayerCtrl : CreatureCtrl
             switch (currentSkill)
             {
                 case Skills.Punch:
-                    switch (_lastDir)
+                    switch (PosInfo.LastDir)
                     {
                         case MoveDir.Up:
                             _animator.Play("ATTACK_BACK");
@@ -92,7 +92,7 @@ public class PlayerCtrl : CreatureCtrl
                     }
                     break;
                 case Skills.ArrowShot:
-                    switch (_lastDir)
+                    switch (PosInfo.LastDir)
                     {
                         case MoveDir.Up:
                             _animator.Play("ATTACK_WEAPON_BACK");
@@ -160,7 +160,7 @@ public class PlayerCtrl : CreatureCtrl
     {       
         GameObject go = Managers.resourceMgr.Instantiate("Creature/Arrow");
         ArrowCtrl ac = go.GetComponent<ArrowCtrl>();
-        ac.Dir = _lastDir;
+        ac.Dir = PosInfo.LastDir;
         ac.CellPos = CellPos;
 
         // 피격판정은 ArrowCtrl에서 관리
