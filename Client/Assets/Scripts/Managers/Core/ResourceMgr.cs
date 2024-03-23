@@ -65,7 +65,6 @@ public class ResourceMgr
         Poolable poolable = go.GetComponent<Poolable>();    // Poolable이면 pool에 넣어둠
         if (poolable != null)
         {
-            Utils.Timer(time);
             Managers.poolMgr.Push(poolable);
             return;
         }

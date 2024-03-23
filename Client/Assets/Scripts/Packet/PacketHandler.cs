@@ -45,7 +45,7 @@ class PacketHandler
     public static void S_MoveHandler(PacketSession session, IMessage packet)
     {
         S_Move movePacket = packet as S_Move;
-        ServerSession serverSession = session as ServerSession;
+        //ServerSession serverSession = session as ServerSession;
 
         GameObject go = Managers.objectMgr.FindGameObjectbyId(movePacket.PlayerId);
         if (go == null)
@@ -56,5 +56,21 @@ class PacketHandler
             return;
 
         cc.PosInfo = movePacket.PosInfo;
+    }
+
+    public static void S_SkillHandler(PacketSession session, IMessage packet)
+    {
+        S_Skill skillPacket = packet as S_Skill;
+        //ServerSession serverSession = session as ServerSession;
+
+        GameObject go = Managers.objectMgr.FindGameObjectbyId(skillPacket.PlayerId);    // 스킬 쓴 플레이어 서치
+        if (go == null)
+            return;
+
+        PlayerCtrl pc = go.GetComponent<PlayerCtrl>();
+        if (pc == null)
+            return;
+
+        pc.useSkill(skillPacket.SkillInfo.SkillId);
     }
 }

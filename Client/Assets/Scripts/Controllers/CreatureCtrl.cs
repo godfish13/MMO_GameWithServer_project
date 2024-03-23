@@ -13,7 +13,7 @@ public class CreatureCtrl : MonoBehaviour
     [SerializeField] private int _id;
     public int Id { get { return _id; } set { _id = value; } }
 
-    [SerializeField] private Vector3Int _CellPosition = new Vector3Int();
+    [SerializeField] private Vector3Int _CellPosition = new Vector3Int();   // inspector 내에서 CellPos 관찰을 위한 디버그용 따로 작동에 쓰진않음
 
 
     protected float _speed = 5.0f;
@@ -37,6 +37,12 @@ public class CreatureCtrl : MonoBehaviour
         }
     }
 
+    public void SyncPos()
+    {
+        Vector3 destPos = Managers.mapMgr.CurrentGrid.CellToWorld(CellPos) + new Vector3(0.5f, yoffset);
+        transform.position = destPos;
+    }
+
     public Vector3Int CellPos 
     {
         get { return new Vector3Int(PosInfo.PosX, PosInfo.PosY, 0); } 
@@ -45,8 +51,10 @@ public class CreatureCtrl : MonoBehaviour
             if (PosInfo.PosX == value.x && PosInfo.PosY == value.y)
                 return;
             PosInfo.PosX = value.x; 
-            PosInfo.PosY = value.y;
+            PosInfo.PosY = value.y;           
             _updated = true;
+
+            _CellPosition = CellPos;    // inspector 내에서 CellPos 관찰을 위한 디버그용 따로 작동에 쓰진않음
         } 
     }
 
@@ -216,7 +224,6 @@ public class CreatureCtrl : MonoBehaviour
 
         State = CreatureState.Idle;
         Dir = MoveDir.None;
-        CellPos = new Vector3Int(0, 0, 0);
         UpdateAnim();
     }
 

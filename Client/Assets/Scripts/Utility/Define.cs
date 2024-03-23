@@ -6,8 +6,8 @@ public class Define
 {
     public enum Skills
     {
-        Punch,
-        ArrowShot,
+        Punch = 1,      // proto랑 맞추기위해 0말고 1
+        ArrowShot = 2,
     }
 
     public enum Layer

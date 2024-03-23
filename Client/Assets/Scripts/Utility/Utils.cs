@@ -53,10 +53,4 @@ public class Utils
 
         return null;
     }
-
-    public static async void Timer(float time)     // time초만큼 대기
-    {
-        Debug.Log($"Await {time} seconds");
-        await Task.Delay(TimeSpan.FromSeconds(time));
-    }
 }

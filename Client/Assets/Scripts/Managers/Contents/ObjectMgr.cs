@@ -22,6 +22,7 @@ public class ObjectMgr
             myPlayerCtrl = go.GetComponent<MyPlayerCtrl>();
             myPlayerCtrl.Id = info.PlayerId;
             myPlayerCtrl.PosInfo = info.PosInfo;
+            myPlayerCtrl.SyncPos();     // 서버상 위치와 유니티상 위치 동기화
         }
         else
         {
@@ -32,6 +33,7 @@ public class ObjectMgr
             PlayerCtrl pc = go.GetComponent<PlayerCtrl>();
             pc.Id = info.PlayerId;
             pc.PosInfo = info.PosInfo;
+            pc.SyncPos();        // 서버상 위치와 유니티상 위치 동기화
         }
     }
 

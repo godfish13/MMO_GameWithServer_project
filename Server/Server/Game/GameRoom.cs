@@ -87,6 +87,50 @@ namespace Server.InGame
             }
         }
     
+        public void HandleMove(Player player, C_Move movePacket)
+        {
+            if (player == null)
+                return;
+
+            lock (_lock)
+            {
+                // 서버에 저장된 자신의 좌표 변경(이동)
+                PlayerInfo info = player.info;
+                info.PosInfo = movePacket.PosInfo;
+
+                // 다른 플레이어들에게 자기위치 방송
+                S_Move broadMovePkt = new S_Move(); // 방송하려고 서버측에서 보내는 M 패킷
+                broadMovePkt.PlayerId = player.info.PlayerId;   // 움직인 자신 Id 입력
+                broadMovePkt.PosInfo = movePacket.PosInfo;
+
+                BroadCast(broadMovePkt);
+            }   
+        }
+
+        public void HandleSkill(Player player, C_Skill skillPacket)
+        {
+            if (player == null)
+                return;
+
+            lock (_lock)
+            {
+                PlayerInfo info = player.info;
+                if (info.PosInfo.State != CreatureState.Idle)   // Idle상태에서만 스킬쓰도록 했음
+                    return;
+
+                // Todo 스킬 사용 가능 여부 체크
+
+                info.PosInfo.State = CreatureState.Skill;
+
+                S_Skill broadSkillPacket = new S_Skill() { SkillInfo = new SkillInfo() };
+                broadSkillPacket.PlayerId = player.info.PlayerId;
+                broadSkillPacket.SkillInfo.SkillId = 1;     // Todo 데이터 시트로 나중에 변경 예정 일단 간단히 1만 설정
+                BroadCast(broadSkillPacket);
+
+                // Todo 데미지 판정
+            }
+        }
+
         public void BroadCast(IMessage packet)
         {
              lock (_lock)

@@ -14,6 +14,9 @@ public class PlayerCtrl : CreatureCtrl
     protected Coroutine _coSkill;
     protected Define.Skills currentSkill = Skills.Punch;
 
+    protected float PunchCoolTime = 0.3f;   // 애니메이션 길이랑 통일
+
+
     protected override void Init()
     {
         yoffset = 0.7f;
@@ -134,26 +137,29 @@ public class PlayerCtrl : CreatureCtrl
         }
     }
 
+    public void useSkill(int skillId)
+    {
+        if (skillId == 1)
+        {
+            _coSkill = StartCoroutine("coPunchSkill");
+        }
+    }
+
+    protected virtual void CheckUpdatedFlag()
+    {
+
+    }
+
     IEnumerator coPunchSkill()
     {
-        // 피격 판정
-        GameObject go = Managers.objectMgr.SearchPos(GetFrontCellPos());
-        if (go != null)
-        {
-            Debug.Log(go.name);
-
-            CreatureCtrl cc = go.GetComponent<CreatureCtrl>();
-            if (cc != null)
-            {
-                cc.OnDamaged();
-            }
-        }
+        // 피격 판정은 서버단으로 이동
 
         // 대기 시간
-        currentSkill = Skills.Punch;
-        yield return new WaitForSeconds(0.3f);
+        State = CreatureState.Skill;
+        yield return new WaitForSeconds(PunchCoolTime);  // 서버 외 클라이언트에서도 쿨타임을 체크하여 서버의 부담을 줄여줌
         State = CreatureState.Idle;
         _coSkill = null;
+        CheckUpdatedFlag(); // State = Idle이 되었다는 것을 서버에 알려야하는데 따로 패킷까지 파긴 오바니 쓰던거 잠깐 임시용 Todo
     }
 
     IEnumerator coArrowSkill()

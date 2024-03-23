@@ -42,8 +42,12 @@ public class MyPlayerCtrl : PlayerCtrl
             case Skills.Punch:
                 if (Input.GetKey(KeyCode.Space))
                 {
-                    State = CreatureState.Skill;
-                    _coSkill = StartCoroutine("coPunchSkill");
+                    Debug.Log("Skill used");
+                    C_Skill skillPacket = new C_Skill() { SkillInfo = new SkillInfo() };
+                    skillPacket.SkillInfo.SkillId = 1;
+                    Managers.networkMgr.Send(skillPacket);  
+
+                    _coSkillCoolTimer = StartCoroutine("CoInputCoolTimer", PunchCoolTime);   // 스킬 사용 패킷 요청 쿨타임 0.3초
                 }
                 break;
             case Skills.ArrowShot:
@@ -66,6 +70,13 @@ public class MyPlayerCtrl : PlayerCtrl
                 currentSkill += 1;
         }
         #endregion
+    }
+
+    Coroutine _coSkillCoolTimer;
+    IEnumerator CoInputCoolTimer(float time)
+    {
+        yield return new WaitForSeconds(time);
+        _coSkillCoolTimer = null;
     }
 
     private void LateUpdate()
@@ -135,7 +146,7 @@ public class MyPlayerCtrl : PlayerCtrl
         CheckUpdatedFlag();     // _updated 플래그에 의해 C_Move 발송
     }
 
-    void CheckUpdatedFlag()
+    protected override void CheckUpdatedFlag()
     {
         if (_updated == true)
         {
