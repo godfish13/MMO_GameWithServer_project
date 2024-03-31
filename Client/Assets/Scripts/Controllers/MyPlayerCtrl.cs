@@ -6,6 +6,7 @@ using Google.Protobuf.Protocol;
 
 public class MyPlayerCtrl : PlayerCtrl
 {
+    bool _moveKeyPressed = false;   // MoveDir.None을 삭제하고 대신 입력값이 없는 상태를 판별해줄 boolean
     protected override void Init()
     {
         base.Init();
@@ -29,7 +30,7 @@ public class MyPlayerCtrl : PlayerCtrl
     protected override void UpdateIdle()
     {
         #region Moving direction
-        if (Dir != MoveDir.None)
+        if (_moveKeyPressed)
         {
             State = CreatureState.Moving;
             return;
@@ -86,6 +87,8 @@ public class MyPlayerCtrl : PlayerCtrl
 
     void GetDirInput()  // 키 입력 시 상태 지정
     {
+        _moveKeyPressed = true;
+
         if (Input.GetKey(KeyCode.W))
         {
             Dir = MoveDir.Up;
@@ -104,13 +107,13 @@ public class MyPlayerCtrl : PlayerCtrl
         }
         else
         {
-            Dir = MoveDir.None;
+            _moveKeyPressed = false;
         }
     }
 
     protected override void CalculateDestPos()   // C_Move Packet 생성하고 보내기
     {
-        if (Dir == MoveDir.None)
+        if (_moveKeyPressed == false)
         {
             State = CreatureState.Idle;
             CheckUpdatedFlag();         // Idle state로 변하더라도 C_Move pkt 보낼 수 있도록 여기에 예외적으로 추가

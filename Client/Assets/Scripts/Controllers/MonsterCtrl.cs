@@ -49,7 +49,7 @@ public class MonsterCtrl : CreatureCtrl
         _speed = 3.0f;
 
         State = CreatureState.Idle;
-        Dir = MoveDir.None;
+        Dir = MoveDir.Down;
 
         if (isRange)
             _skillRange = 10.0f;
@@ -212,7 +212,7 @@ public class MonsterCtrl : CreatureCtrl
     {
         GameObject go = Managers.resourceMgr.Instantiate("Creature/Rock");
         ArrowCtrl ac = go.GetComponent<ArrowCtrl>();
-        ac.Dir = _lastDir;
+        ac.Dir = Dir;
         ac.CellPos = CellPos;
 
         // 피격판정은 ArrowCtrl에서 관리

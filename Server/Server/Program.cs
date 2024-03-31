@@ -25,7 +25,7 @@ namespace Server
 
 		static void Main(string[] args)
 		{
-			RoomMgr.Instance.Add();
+			RoomMgr.Instance.Add(1);
 			Console.WriteLine($"Current Room : {RoomMgr.Instance.Find(1).RoomId}");
 
 			// DNS (Domain Name System)

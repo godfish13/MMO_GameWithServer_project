@@ -14,7 +14,7 @@ class PacketHandler
         C_Move movePacket = packet as C_Move;
 		ClientSession clientSession = session as ClientSession;
 
-		Console.WriteLine($"C_Move ({movePacket.PosInfo.PosX}, {movePacket.PosInfo.PosY})");
+		//Console.WriteLine($"C_Move ({movePacket.PosInfo.PosX}, {movePacket.PosInfo.PosY})");
 
 		Player player = clientSession.myPlayer;		// clientSession.myPlayer == null 체크는 멀티스레드 환경 상 제대로 작동안할 가능성이 존재함
 		if (player == null)				// 이를 방지하기 위해 player로 한번 꺼내고 null체크하면 다른 스레드에서 myPlayer을 건들더라도  

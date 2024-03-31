@@ -11,7 +11,14 @@ namespace Server.InGame
         object _lock = new object();
         public int RoomId { get; set; }
 
-        List<Player> _players = new List<Player>(); // 해당 룸에 접속중인 player들
+        Dictionary<int, Player> _players = new Dictionary<int, Player>(); // 해당 룸에 접속중인 player들
+        
+        Map _map = new Map();
+
+        public void Init(int mapId)
+        {
+            _map.LoadMap(mapId);
+        }
 
         public void EnterGame(Player newPlayer)
         {
@@ -20,7 +27,7 @@ namespace Server.InGame
                 
             lock (_lock)
             {
-                _players.Add(newPlayer);
+                _players.Add(newPlayer.info.PlayerId, newPlayer);
                 newPlayer.myRoom = this;
 
                 #region player 입장 성공시 Client의 player 본인에게 데이터 전송
@@ -30,7 +37,7 @@ namespace Server.InGame
                     newPlayer.mySession.Send(enterPacket);
 
                     S_Spawn spawnPacket = new S_Spawn(); // 자신은 제외하고 현재 GameRoom에 입장해있는 플레이어들 정보 전송
-                    foreach (Player p in _players)  
+                    foreach (Player p in _players.Values)  
                     {
                         if (newPlayer != p)
                             spawnPacket.PlayerList.Add(p.info);
@@ -44,7 +51,7 @@ namespace Server.InGame
                     S_Spawn spawnPacket = new S_Spawn();    // 타 플레이어들에게 newPlayer입장사실 전달
                     spawnPacket.PlayerList.Add(newPlayer.info);
 
-                    foreach (Player player in _players) 
+                    foreach (Player player in _players.Values) 
                     {
                         if (newPlayer != player)
                             player.mySession.Send(spawnPacket);
@@ -58,11 +65,10 @@ namespace Server.InGame
         {
             lock (_lock)
             {
-                Player player = _players.Find(player => player.info.PlayerId == playerId);
-                if (player == null)
+                Player player = null;
+                if (_players.Remove(playerId, out player) == false)
                     return;
 
-                _players.Remove(player);
                 player.myRoom = null;
 
                 #region player 퇴장 성공시 Client의 player 본인에게 데이터 전송
@@ -77,7 +83,7 @@ namespace Server.InGame
                 {
                     S_Despawn despawnPacket = new S_Despawn();
                     despawnPacket.PlayerIdList.Add(player.info.PlayerId);
-                    foreach (Player p in _players)
+                    foreach (Player p in _players.Values)
                     {
                         if (player != p)
                             p.mySession.Send(despawnPacket);
@@ -94,9 +100,18 @@ namespace Server.InGame
 
             lock (_lock)
             {
-                // 서버에 저장된 자신의 좌표 변경(이동)
+                // move 패킷 정상 검증
+                PositionInfo movePosInfo = movePacket.PosInfo;
                 PlayerInfo info = player.info;
-                info.PosInfo = movePacket.PosInfo;
+                if (movePosInfo.PosX != info.PosInfo.PosX || movePosInfo.PosY != info.PosInfo.PosY) // 현 좌표랑 목표좌표랑 다른지 체크
+                {
+                    if (_map.CanGo(new Vector2Int(movePosInfo.PosX, movePosInfo.PosY)) == false) 
+                        return;
+                }
+                // 서버에 저장된 자신의 좌표 변경(이동)
+                info.PosInfo.State = movePosInfo.State;
+                info.PosInfo.MoveDir = movePosInfo.MoveDir;
+                _map.ApplyMove(player, new Vector2Int(movePosInfo.PosX, movePosInfo.PosY));
 
                 // 다른 플레이어들에게 자기위치 방송
                 S_Move broadMovePkt = new S_Move(); // 방송하려고 서버측에서 보내는 M 패킷
@@ -127,7 +142,13 @@ namespace Server.InGame
                 broadSkillPacket.SkillInfo.SkillId = 1;     // Todo 데이터 시트로 나중에 변경 예정 일단 간단히 1만 설정
                 BroadCast(broadSkillPacket);
 
-                // Todo 데미지 판정
+                // 데미지 판정
+                Vector2Int skillTargetPos = player.GetFrontCellPos(info.PosInfo.MoveDir);
+                Player target = _map.FindPlayerInCellPos(skillTargetPos);
+                if (target != null)
+                {
+                    Console.WriteLine("target is valid");
+                }
             }
         }
 
@@ -135,7 +156,7 @@ namespace Server.InGame
         {
              lock (_lock)
             {
-                foreach (Player p in _players)
+                foreach (Player p in _players.Values)
                 {
                     p.mySession.Send(packet);
                 }

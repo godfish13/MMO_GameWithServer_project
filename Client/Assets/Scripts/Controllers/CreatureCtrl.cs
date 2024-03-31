@@ -75,7 +75,6 @@ public class CreatureCtrl : MonoBehaviour
         }
     }
 
-    protected MoveDir _lastDir;    // 순전히 Idle Anim 재생 방향을 결정하기 위해 마지막으로 바라본 방향 저장용
     public MoveDir Dir      // 현재 상태 설정과 애니메이션을 동시에 변경되도록 프로퍼티 설정
     {
         get { return PosInfo.MoveDir; }
@@ -86,9 +85,6 @@ public class CreatureCtrl : MonoBehaviour
 
             PosInfo.MoveDir = value;
 
-            if (value != MoveDir.None)  // 마지막으로 바라본 방향 기록
-                _lastDir = value;
-
             UpdateAnim();   // _dir 변화 시 애니메이션 업데이트
             _updated = true;
         }
@@ -97,22 +93,20 @@ public class CreatureCtrl : MonoBehaviour
     public MoveDir GetDirfromVector(Vector3Int dir)
     {
         if (dir.y > 0)
-            return MoveDir.Up;
-        else if (dir.y < 0)
-            return MoveDir.Down;
+            return MoveDir.Up;      
         else if (dir.x > 0)
             return MoveDir.Right;
         else if (dir.x < 0)
             return MoveDir.Left;
         else
-            return MoveDir.None;
+            return MoveDir.Down;
     }
 
     public Vector3Int GetFrontCellPos()
     {
         Vector3Int cellPos = CellPos;
 
-        switch (_lastDir)
+        switch (Dir)
         {
             case MoveDir.Up:
                 cellPos += Vector3Int.up;
@@ -135,7 +129,7 @@ public class CreatureCtrl : MonoBehaviour
     {
         if (State == CreatureState.Idle)
         {
-            switch (_lastDir)
+            switch (Dir)
             {
                 case MoveDir.Up:
                     _animator.Play("IDLE_BACK");
@@ -179,7 +173,7 @@ public class CreatureCtrl : MonoBehaviour
         }
         else if (State == CreatureState.Skill)
         {
-            switch (_lastDir)
+            switch (Dir)
             {
                 case MoveDir.Up:
                     _animator.Play("ATTACK_BACK");
@@ -223,7 +217,7 @@ public class CreatureCtrl : MonoBehaviour
         _spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
 
         State = CreatureState.Idle;
-        Dir = MoveDir.None;
+        Dir = MoveDir.Down;
         UpdateAnim();
     }
 

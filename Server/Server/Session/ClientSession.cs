@@ -42,7 +42,7 @@ namespace Server
             {
                 myPlayer.info.Name = $"Player_{myPlayer.info.PlayerId}";
                 myPlayer.info.PosInfo.State = CreatureState.Idle;
-				myPlayer.info.PosInfo.MoveDir = MoveDir.None;
+				myPlayer.info.PosInfo.MoveDir = MoveDir.Down;
 				myPlayer.info.PosInfo.PosX = 0;
 				myPlayer.info.PosInfo.PosY = 0;
                 myPlayer.mySession = this;
@@ -55,7 +55,7 @@ namespace Server
 		public override void OnRecvPacket(ArraySegment<byte> buffer)
 		{
 			PacketManager.Instance.OnRecvPacket(this, buffer);
-			Console.WriteLine(buffer);
+			//Console.WriteLine(buffer);
 		}
 
 		public override void OnDisconnected(EndPoint endPoint)

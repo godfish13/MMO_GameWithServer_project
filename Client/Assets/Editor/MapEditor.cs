@@ -18,14 +18,20 @@ public class MapEditor
     [MenuItem("Tools/GenerateMapCollisions %#&g")]     // 유니티 에디터 위 메뉴창에 Tools항목 만들고 하위항목으로 GenerateMap 넣어줌
     private static void GenerateMap()    // GenerateMap의 기능
     {
+        GenerateMapinPath("Assets/Resources/Map");
+        GenerateMapinPath("../Common/MapData");
+    }
+
+    private static void GenerateMapinPath(string path)
+    {
         GameObject[] maps = Resources.LoadAll<GameObject>("Prefabs/Map");
 
         foreach (GameObject map in maps)
         {
             Tilemap tmbase = Utils.FindComponentinChild<Tilemap>(map, "Tilemap_Base", true);    // base 전범위 + collision 체크
-            Tilemap tm = Utils.FindComponentinChild<Tilemap>(map, "Tilemap_Collision", true);
+            Tilemap tmCollsion = Utils.FindComponentinChild<Tilemap>(map, "Tilemap_Collision", true);
 
-            using (StreamWriter writer = File.CreateText($"Assets/Resources/Map/{map.name + "_Collisions"}.txt"))
+            using (StreamWriter writer = File.CreateText($"{path}/{map.name + "_Collisions"}.txt"))
             {
                 writer.WriteLine(tmbase.cellBounds.xMax);
                 writer.WriteLine(tmbase.cellBounds.xMin);
@@ -36,7 +42,7 @@ public class MapEditor
                 {
                     for (int x = tmbase.cellBounds.xMin; x <= tmbase.cellBounds.xMax; x++)
                     {
-                        TileBase tile = tm.GetTile(new Vector3Int(x, y, 0));    // collision 지형 체크
+                        TileBase tile = tmCollsion.GetTile(new Vector3Int(x, y, 0));    // collision 지형 체크
                         if (tile != null)
                             writer.Write("1");
                         else
@@ -45,9 +51,8 @@ public class MapEditor
                     writer.WriteLine();
                 }
             }
-        }        
+        }
     }
-
 #endif
 
 }
