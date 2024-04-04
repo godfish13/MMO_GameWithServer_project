@@ -3,10 +3,11 @@ using ServerCore;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Numerics;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text;
 
-namespace Server.InGame
+namespace Server.Game
 {
     public struct Pos   // 왼쪽 위 -> 오른쪽 아래 순서이기에 y, x로 지정
     {
@@ -26,7 +27,7 @@ namespace Server.InGame
         {
             if (F == other.F)
                 return 0;
-            return (F < other.F) ? 1 : -1;
+            return F < other.F ? 1 : -1;
         }
     }
 
@@ -46,9 +47,9 @@ namespace Server.InGame
         public static Vector2Int right { get { return new Vector2Int(1, 0); } }
         public static Vector2Int left { get { return new Vector2Int(-1, 0); } }
 
-        public static Vector2Int operator+(Vector2Int a, Vector2Int b) 
+        public static Vector2Int operator +(Vector2Int a, Vector2Int b)
         {
-            return new Vector2Int(a.x + b.x, a.y + b.y);              
+            return new Vector2Int(a.x + b.x, a.y + b.y);
         }
     }
 
@@ -65,7 +66,7 @@ namespace Server.InGame
         public int SizeY { get { return MaxY - MinY + 1; } }    // 맵 y 상하 크기
 
         bool[,] _collsion;      // 충돌(벽) 정보
-        Player[,] _players;     // 충돌(플레이어) 정보
+        GameObject[,] _objects;     // 충돌(플레이어) 정보
 
         public bool CanGo(Vector2Int cellPos, bool CheckObject = true)
         {
@@ -74,11 +75,11 @@ namespace Server.InGame
 
             int x = cellPos.x - MinX;
             int y = MaxY - cellPos.y;   // _collsion[y, x]의 위치를 cellPos와 맞게 계산
-           
-            return !_collsion[y, x] && (!CheckObject || _players[y, x] == null);    // 1이면 collision이므로 이동불가, 0이면 이동가능
+
+            return !_collsion[y, x] && (!CheckObject || _objects[y, x] == null);    // 1이면 collision이므로 이동불가, 0이면 이동가능
         }                                                                           // 플레이어, 크리쳐 등 오브젝트 체크 == true면 그거도 체크
 
-        public Player FindPlayerInCellPos(Vector2Int cellPos)
+        public GameObject FindObjectInCellPos(Vector2Int cellPos)
         {
             if (cellPos.x < MinX || cellPos.x > MaxX)
                 return null;
@@ -88,35 +89,38 @@ namespace Server.InGame
 
             int x = cellPos.x - MinX;
             int y = MaxY - cellPos.y;
-            return _players[y, x];
+
+            return _objects[y, x];
         }
 
-        public bool ApplyMove(Player player, Vector2Int destPos)
+        public bool ApplyLeave(GameObject gameObject)
         {
-            PositionInfo posInfo = player.info.PosInfo;
+            PositionInfo posInfo = gameObject.PosInfo;
             if (posInfo.PosX < MinX || posInfo.PosX > MaxX) // 좌표 유효성 검증
                 return false;
             if (posInfo.PosY < MinY || posInfo.PosY > MaxY)
                 return false;
+  
+            int x = posInfo.PosX - MinX;
+            int y = MaxY - posInfo.PosY;
+            if (_objects[y, x] == gameObject)   // 비우려는 위치에 내가 있던게 아닌경우 다른 오브젝트를 없애버릴수도 있으므로 한번 체크
+                _objects[y, x] = null;           
+
+            return true;
+        }
+
+        public bool ApplyMove(GameObject gameObject, Vector2Int destPos)
+        {
+            ApplyLeave(gameObject); // 오브젝트 배열상 이동 전 위치 비우기
+
+            PositionInfo posInfo = gameObject.PosInfo;
             if (CanGo(destPos) == false)
                 return false;
 
-            #region player 위치 계산
-            // 플레이어 배열상 이전 위치 비우기
-            {
-                int x = posInfo.PosX - MinX; 
-                int y = MaxY - posInfo.PosY;
-                if (_players[y, x] == player)   // 비우려는 위치에 내가 있던게 아닌경우 다른 플레이어를 없애버릴수도 있으므로 한번 체크
-                    _players[y, x] = null;
-            }
-
-            // 플레이어 배열상 pos 이동 시키기
-            {
-                int x = destPos.x - MinX;
-                int y = MaxY - destPos.y;
-                _players[y, x] = player;
-            }
-            #endregion
+            // 오브젝트 배열상 pos 이동 시키기            
+            int x = destPos.x - MinX;
+            int y = MaxY - destPos.y;
+            _objects[y, x] = gameObject;            
 
             posInfo.PosX = destPos.x;
             posInfo.PosY = destPos.y;
@@ -141,8 +145,8 @@ namespace Server.InGame
             int yCount = MaxY - MinY + 1;   // 대충 Max Min 둘다 양쪽이 포함되어서 그럼 귀찮으니 걍 세보셈
 
             _collsion = new bool[yCount, xCount];   // 좌측위부터 오른쪽으로 순서대로 진행하기 편하게 (y,x)로 넣어줌
-            _players = new Player[yCount, xCount];
-            
+            _objects = new GameObject[yCount, xCount];
+
             for (int y = 0; y < yCount; y++)
             {
                 string line = reader.ReadLine();
@@ -177,7 +181,7 @@ namespace Server.InGame
             int[,] open = new int[SizeY, SizeX]; // OpenList
             for (int y = 0; y < SizeY; y++)
                 for (int x = 0; x < SizeX; x++)
-                    open[y, x] = Int32.MaxValue;
+                    open[y, x] = int.MaxValue;
 
             Pos[,] parent = new Pos[SizeY, SizeX];
 
@@ -270,6 +274,11 @@ namespace Server.InGame
         {
             // ArrayPos -> CellPos
             return new Vector2Int(pos.X + MinX, MaxY - pos.Y);
+        }
+
+        internal void ApplyLeave(Monster monster)
+        {
+            throw new NotImplementedException();
         }
 
         #endregion

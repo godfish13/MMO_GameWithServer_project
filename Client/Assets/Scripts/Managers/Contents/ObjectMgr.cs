@@ -11,29 +11,55 @@ public class ObjectMgr
     Dictionary<int, GameObject> _objects = new Dictionary<int, GameObject>();
     // playerId, player
 
-    public void Add(PlayerInfo info, bool myCtrl = false) // MyCtrl : 내가 조종하는지 아닌지 체크
+    public static GameObjectType GetGameObjectTypebyId(int ObjectId)
     {
-        if (myCtrl == true)
-        {
-            GameObject go = Managers.resourceMgr.Instantiate("Creature/MyPlayer");
-            go.name = info.Name;
-            _objects.Add(info.PlayerId, go);
+        int type = ObjectId >> 24 & 0x7F;
+        return (GameObjectType)type;
+    }
 
-            myPlayerCtrl = go.GetComponent<MyPlayerCtrl>();
-            myPlayerCtrl.Id = info.PlayerId;
-            myPlayerCtrl.PosInfo = info.PosInfo;
-            myPlayerCtrl.SyncPos();     // 서버상 위치와 유니티상 위치 동기화
+    public void Add(ObjectInfo info, bool myCtrl = false) // MyCtrl : 내가 조종하는지 아닌지 체크
+    {
+        GameObjectType objectType = GetGameObjectTypebyId(info.ObjectId);
+
+        if (objectType == GameObjectType.Player)
+        {
+            if (myCtrl == true)
+            {
+                GameObject go = Managers.resourceMgr.Instantiate("Creature/MyPlayer");
+                go.name = info.Name;
+                _objects.Add(info.ObjectId, go);
+
+                myPlayerCtrl = go.GetComponent<MyPlayerCtrl>();
+                myPlayerCtrl.Id = info.ObjectId;
+                myPlayerCtrl.PosInfo = info.PosInfo;
+                myPlayerCtrl.SyncPos();     // 서버상 위치와 유니티상 위치 동기화
+            }
+            else
+            {
+                GameObject go = Managers.resourceMgr.Instantiate("Creature/Player");
+                go.name = info.Name;
+                _objects.Add(info.ObjectId, go);
+
+                PlayerCtrl pc = go.GetComponent<PlayerCtrl>();
+                pc.Id = info.ObjectId;
+                pc.PosInfo = info.PosInfo;
+                pc.SyncPos();        // 서버상 위치와 유니티상 위치 동기화
+            }
         }
-        else
+        else if (objectType == GameObjectType.Monster)
         {
-            GameObject go = Managers.resourceMgr.Instantiate("Creature/Player");
-            go.name = info.Name;
-            _objects.Add(info.PlayerId, go);
+            // Todo
+        }
+        else if (objectType == GameObjectType.Projectile)
+        {
+            GameObject go = Managers.resourceMgr.Instantiate("Creature/Arrow");
+            go.name = "Arrow";
+            _objects.Add(info.ObjectId, go);
 
-            PlayerCtrl pc = go.GetComponent<PlayerCtrl>();
-            pc.Id = info.PlayerId;
-            pc.PosInfo = info.PosInfo;
-            pc.SyncPos();        // 서버상 위치와 유니티상 위치 동기화
+            ArrowCtrl ac = go.GetComponent<ArrowCtrl>();
+            ac.Dir = info.PosInfo.MoveDir;
+            ac.CellPos = new Vector3Int(info.PosInfo.PosX, info.PosInfo.PosY, 0);
+            ac.SyncPos();
         }
     }
 

@@ -43,7 +43,7 @@ public class MyPlayerCtrl : PlayerCtrl
             case Skills.Punch:
                 if (Input.GetKey(KeyCode.Space))
                 {
-                    Debug.Log("Skill used");
+                    Debug.Log("Punch Skill used");
                     C_Skill skillPacket = new C_Skill() { SkillInfo = new SkillInfo() };
                     skillPacket.SkillInfo.SkillId = 1;
                     Managers.networkMgr.Send(skillPacket);  
@@ -54,8 +54,12 @@ public class MyPlayerCtrl : PlayerCtrl
             case Skills.ArrowShot:
                 if (Input.GetKey(KeyCode.Space))
                 {
-                    State = CreatureState.Skill;
-                    _coSkill = StartCoroutine("coArrowSkill");
+                    Debug.Log("Arrow Skill used");
+                    C_Skill skillPacket = new C_Skill() { SkillInfo = new SkillInfo() };
+                    skillPacket.SkillInfo.SkillId = 2;
+                    Managers.networkMgr.Send(skillPacket);
+
+                    _coSkillCoolTimer = StartCoroutine("CoInputCoolTimer", ArrowCoolTime);   // 스킬 사용 패킷 요청 쿨타임 0.2초
                 }
                 break;
         }

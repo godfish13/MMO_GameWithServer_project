@@ -36,7 +36,7 @@ public class ArrowCtrl : CreatureCtrl
         // No Animation
     }
 
-    protected override void CalculateDestPos()
+    /*protected override void CalculateDestPos()    // Arrow의 이동은 이제 서버에서 관리됨 삭제
     {
         Vector3Int destPos = CellPos;
 
@@ -82,5 +82,5 @@ public class ArrowCtrl : CreatureCtrl
             Managers.resourceMgr.Destroy(gameObject);
         }
         
-    }
+    }*/
 }

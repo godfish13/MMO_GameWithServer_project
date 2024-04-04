@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 using UnityEngine;
-using static Define;
 
 public class CreatureCtrl : MonoBehaviour
 {

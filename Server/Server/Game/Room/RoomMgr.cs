@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Server.InGame
+namespace Server.Game
 {
     public class RoomMgr
     {
@@ -17,7 +17,7 @@ namespace Server.InGame
             GameRoom gameRoom = new GameRoom();
             gameRoom.Init(mapId);
 
-            lock(_lock)
+            lock (_lock)
             {
                 gameRoom.RoomId = _roomId;
                 _rooms.Add(gameRoom.RoomId, gameRoom);
@@ -26,7 +26,7 @@ namespace Server.InGame
             return gameRoom;
         }
 
-        public bool Remove(int roomId) 
+        public bool Remove(int roomId)
         {
             lock (_lock)
             {

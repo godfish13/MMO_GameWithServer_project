@@ -9,12 +9,12 @@ using System.Threading.Tasks;
 using Google.Protobuf;
 using Google.Protobuf.Protocol;
 using Google.Protobuf.WellKnownTypes;
-using Server.InGame;
 using ServerCore;
+using Server.Game;
 
 namespace Server
 {
-	class Program
+    class Program
 	{
 		static Listener _listener = new Listener();
 
@@ -38,11 +38,15 @@ namespace Server
 			Console.WriteLine("Listening...");
 
 			//FlushRoom();
-			JobTimer.Instance.Push(FlushRoom);
+			//JobTimer.Instance.Push(FlushRoom);
 
 			while (true)
 			{
-				JobTimer.Instance.Flush();
+				//JobTimer.Instance.Flush();
+
+				//Todo - JobQueue로 최적화 예정
+				RoomMgr.Instance.Find(1).Update();
+				Thread.Sleep(100);
 			}
 		}
 	}

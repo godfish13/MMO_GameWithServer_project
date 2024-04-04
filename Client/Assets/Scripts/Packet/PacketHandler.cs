@@ -27,16 +27,16 @@ class PacketHandler
     {
         S_Spawn spawnPacket = packet as S_Spawn;
 
-        foreach (PlayerInfo player in spawnPacket.PlayerList)
+        foreach (ObjectInfo gameObject in spawnPacket.ObjectList)
         {
-            Managers.objectMgr.Add(player, myCtrl: false);
+            Managers.objectMgr.Add(gameObject, myCtrl: false);
         }
     }
 
     public static void S_DespawnHandler(PacketSession session, IMessage packet)
     {
         S_Despawn despawnPacket = packet as S_Despawn;
-        foreach (int Id in despawnPacket.PlayerIdList)
+        foreach (int Id in despawnPacket.ObjectIdList)
         {
             Managers.objectMgr.Remove(Id);
         }
@@ -45,9 +45,8 @@ class PacketHandler
     public static void S_MoveHandler(PacketSession session, IMessage packet)
     {
         S_Move movePacket = packet as S_Move;
-        //ServerSession serverSession = session as ServerSession;
 
-        GameObject go = Managers.objectMgr.FindGameObjectbyId(movePacket.PlayerId);
+        GameObject go = Managers.objectMgr.FindGameObjectbyId(movePacket.ObjectId);
         if (go == null)
             return;
 
@@ -63,7 +62,7 @@ class PacketHandler
         S_Skill skillPacket = packet as S_Skill;
         //ServerSession serverSession = session as ServerSession;
 
-        GameObject go = Managers.objectMgr.FindGameObjectbyId(skillPacket.PlayerId);    // 스킬 쓴 플레이어 서치
+        GameObject go = Managers.objectMgr.FindGameObjectbyId(skillPacket.ObjectId);    // 스킬 쓴 플레이어 서치
         if (go == null)
             return;
 

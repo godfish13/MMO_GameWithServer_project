@@ -8,12 +8,12 @@ using ServerCore;
 using System.Net;
 using Google.Protobuf.Protocol;
 using Google.Protobuf;
-using Server.InGame;
 using System.Diagnostics;
+using Server.Game;
 
 namespace Server
 {
-	public class ClientSession : PacketSession
+    public class ClientSession : PacketSession
 	{
 		public Player myPlayer { get; set; }	// 이 Session을 가진 Player
 		public int SessionId { get; set; }
@@ -36,20 +36,20 @@ namespace Server
 		{
 			Console.WriteLine($"OnConnected : {endPoint}");
 
-			myPlayer = PlayerMgr.Instance.Add();    // 플레이어 목록에 접속한 플레이어 넣고 자신이 대변하는 플레이어 기록
+			myPlayer = ObjectMgr.Instance.Add<Player>();    // 플레이어 목록에 접속한 플레이어 넣고 자신이 대변하는 플레이어 기록
 
             #region 플레이어 정보 입력
             {
-                myPlayer.info.Name = $"Player_{myPlayer.info.PlayerId}";
-                myPlayer.info.PosInfo.State = CreatureState.Idle;
-				myPlayer.info.PosInfo.MoveDir = MoveDir.Down;
-				myPlayer.info.PosInfo.PosX = 0;
-				myPlayer.info.PosInfo.PosY = 0;
+                myPlayer.Info.Name = $"Player_{myPlayer.Info.ObjectId}";
+                myPlayer.Info.PosInfo.State = CreatureState.Idle;
+				myPlayer.Info.PosInfo.MoveDir = MoveDir.Down;
+				myPlayer.Info.PosInfo.PosX = 0;
+				myPlayer.Info.PosInfo.PosY = 0;
                 myPlayer.mySession = this;
             }
             #endregion           
             RoomMgr.Instance.Find(1).EnterGame(myPlayer);
-            Console.WriteLine($"{myPlayer.info.Name} has entered to GameRoom_{RoomMgr.Instance.Find(1).RoomId}");
+            Console.WriteLine($"{myPlayer.Info.Name} has entered to GameRoom_{RoomMgr.Instance.Find(1).RoomId}");
         }
 
 		public override void OnRecvPacket(ArraySegment<byte> buffer)
@@ -62,7 +62,7 @@ namespace Server
 		{
 			SessionManager.Instance.Remove(this);
 
-            RoomMgr.Instance.Find(1).LeaveGame(myPlayer.info.PlayerId);
+            RoomMgr.Instance.Find(1).LeaveGame(myPlayer.Info.ObjectId);
             Console.WriteLine($"OnDisconnected : {endPoint}");
 		}
 

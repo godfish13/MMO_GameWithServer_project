@@ -1,11 +1,11 @@
 ﻿using Google.Protobuf;
 using Google.Protobuf.Protocol;
 using Server;
-using Server.InGame;
 using ServerCore;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Server.Game;
 
 class PacketHandler
 {
@@ -20,7 +20,7 @@ class PacketHandler
 		if (player == null)				// 이를 방지하기 위해 player로 한번 꺼내고 null체크하면 다른 스레드에서 myPlayer을 건들더라도  
 			return;                     // player는 그대로 남아있으므로 비교적 안전해짐
 
-        GameRoom Room = player.myRoom;	// player랑 마찬가지
+        GameRoom Room = player.MyRoom;	// player랑 마찬가지
 		if (Room == null)				// 얘는 GameRoom.LeaveGame에서 실제로 null로 밀어주기도 함으로 더위험함!! 더 주의해야하는부분
 			return;
 
@@ -38,7 +38,7 @@ class PacketHandler
         if (player == null)             // 이를 방지하기 위해 player로 한번 꺼내고 null체크하면 다른 스레드에서 myPlayer을 건들더라도  
             return;                     // player는 그대로 남아있으므로 비교적 안전해짐
 
-        GameRoom Room = player.myRoom;  // player랑 마찬가지
+        GameRoom Room = player.MyRoom;  // player랑 마찬가지
         if (Room == null)               // 얘는 GameRoom.LeaveGame에서 실제로 null로 밀어주기도 함으로 더위험함!! 더 주의해야하는부분
             return;
 
