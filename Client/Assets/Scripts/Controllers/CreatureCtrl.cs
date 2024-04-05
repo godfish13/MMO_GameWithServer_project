@@ -74,6 +74,14 @@ public class CreatureCtrl : MonoBehaviour
         }
     }
 
+    [SerializeField] private MoveDir _dir 
+    {
+        get { return _dir; }
+        set
+        {
+            _dir = value;
+        }
+    }
     public MoveDir Dir      // 현재 상태 설정과 애니메이션을 동시에 변경되도록 프로퍼티 설정
     {
         get { return PosInfo.MoveDir; }
@@ -87,7 +95,7 @@ public class CreatureCtrl : MonoBehaviour
             UpdateAnim();   // _dir 변화 시 애니메이션 업데이트
             _updated = true;
         }
-    }
+    }  
 
     public MoveDir GetDirfromVector(Vector3Int dir)
     {

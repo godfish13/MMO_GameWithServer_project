@@ -1,5 +1,6 @@
 ﻿using Google.Protobuf;
 using Google.Protobuf.Protocol;
+using Server.Data;
 using System;
 using System.Collections.Generic;
 using System.Numerics;
@@ -190,32 +191,44 @@ namespace Server.Game
                 info.PosInfo.State = CreatureState.Skill;
                 S_Skill broadSkillPacket = new S_Skill() { SkillInfo = new SkillInfo() };
                 broadSkillPacket.ObjectId = player.Info.ObjectId;
-                broadSkillPacket.SkillInfo.SkillId = skillPacket.SkillInfo.SkillId;     // Todo 데이터 시트로 나중에 변경 예정 일단 간단히 1만 설정
+                broadSkillPacket.SkillInfo.SkillId = skillPacket.SkillInfo.SkillId;
                 BroadCast(broadSkillPacket);
 
-                // 데미지 판정
-                if (skillPacket.SkillInfo.SkillId == 1)         // punch
-                {
-                    Vector2Int skillTargetPos = player.GetFrontCellPos(info.PosInfo.MoveDir);
-                    GameObject target = Map.FindObjectInCellPos(skillTargetPos);
-                    if (target != null)
-                    {
-                        Console.WriteLine($"Hitted GameObject {target.ObjectId}");
-                    }
-                }
-                else if (skillPacket.SkillInfo.SkillId == 2)    // arrow
-                {
-                    Arrow arrow = ObjectMgr.Instance.Add<Arrow>();
-                    if (arrow == null)
-                        return;
+                // Json 데이터 읽어와서 설정
+                Data.Skill skillData = null;
+                if (DataMgr.SkillDictionary.TryGetValue(skillPacket.SkillInfo.SkillId, out skillData) == false)
+                    return;
 
-                    arrow.Owner = player;
-                    arrow.PosInfo.State = CreatureState.Moving;
-                    arrow.PosInfo.MoveDir = player.PosInfo.MoveDir;
-                    arrow.PosInfo.PosX = player.PosInfo.PosX;
-                    arrow.PosInfo.PosY = player.PosInfo.PosY;
+                switch (skillData.skillType)
+                {
+                    // 데미지 판정
+                    case SkillType.SkillAuto:
+                        {
+                            Vector2Int skillTargetPos = player.GetFrontCellPos(info.PosInfo.MoveDir);
+                            GameObject target = Map.FindObjectInCellPos(skillTargetPos);
+                            if (target != null)
+                            {
+                                Console.WriteLine($"Hitted GameObject {target.ObjectId}");
+                            }
+                        }
+                        break;
+                    case SkillType.SkillProjectile:
+                        {
+                            Arrow arrow = ObjectMgr.Instance.Add<Arrow>();
+                            if (arrow == null)
+                                return;
 
-                    EnterGame(arrow);
+                            arrow.Owner = player;
+                            arrow.Data = skillData;
+
+                            arrow.PosInfo.State = CreatureState.Moving;
+                            arrow.PosInfo.MoveDir = player.PosInfo.MoveDir;
+                            arrow.PosInfo.PosX = player.PosInfo.PosX;
+                            arrow.PosInfo.PosY = player.PosInfo.PosY;
+
+                            EnterGame(arrow);
+                        }
+                        break;
                 }
             }
         }

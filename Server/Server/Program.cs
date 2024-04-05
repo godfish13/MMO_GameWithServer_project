@@ -11,6 +11,7 @@ using Google.Protobuf.Protocol;
 using Google.Protobuf.WellKnownTypes;
 using ServerCore;
 using Server.Game;
+using Server.Data;
 
 namespace Server
 {
@@ -25,6 +26,9 @@ namespace Server
 
 		static void Main(string[] args)
 		{
+			ConfigMgr.LoadConfig();	// Config 파일 읽기
+			DataMgr.LoadData();     // 데이터 읽어들여오기
+
 			RoomMgr.Instance.Add(1);
 			Console.WriteLine($"Current Room : {RoomMgr.Instance.Find(1).RoomId}");
 
@@ -46,7 +50,7 @@ namespace Server
 
 				//Todo - JobQueue로 최적화 예정
 				RoomMgr.Instance.Find(1).Update();
-				Thread.Sleep(100);
+				//Thread.Sleep(100);
 			}
 		}
 	}

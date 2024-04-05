@@ -16,13 +16,14 @@ namespace Server.Game
 
         public override void Update()
         {
-            if (Owner == null || MyRoom == null)
+            if (Data == null || Data.projectile == null || Owner == null || MyRoom == null)
                 return;
 
-            if (_nextMoveTick >= Environment.TickCount64)
+            if (_nextMoveTick >= Environment.TickCount64)   // TickCount64 : millisecond 기준
                 return;
 
-            _nextMoveTick = Environment.TickCount64 + 50;
+            long tick = (long)(1000 / Data.projectile.speed);   // == 0.01
+            _nextMoveTick = Environment.TickCount64 + tick;     // 0.01초당 1칸씩 움직이도록 속도 조정
 
             Vector2Int destPos = GetFrontCellPos();
             if (MyRoom.Map.CanGo(destPos))

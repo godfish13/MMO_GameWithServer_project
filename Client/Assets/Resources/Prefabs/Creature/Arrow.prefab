@@ -97,7 +97,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab2d4ec54c3a2fa49910a95d70a3b5a6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _speed: 5
-  _cellPos: {x: 0, y: 0, z: 0}
-  _state: 0
-  _dir: 2
+  _id: 0
+  _CellPosition: {x: 0, y: 0, z: 0}

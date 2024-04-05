@@ -152,9 +152,9 @@ public class PlayerCtrl : CreatureCtrl
     IEnumerator coPunchSkill()
     {
         // 피격 판정은 서버단으로 이동
+        currentSkill = Skills.Punch;
 
         // 대기 시간
-        currentSkill = Skills.Punch;
         State = CreatureState.Skill;
         yield return new WaitForSeconds(PunchCoolTime);  // 서버 외 클라이언트에서도 쿨타임을 체크하여 서버의 부담을 줄여줌
         State = CreatureState.Idle;
@@ -165,9 +165,9 @@ public class PlayerCtrl : CreatureCtrl
     IEnumerator coArrowSkill()
     {
         // 피격 판정 서버단으로 이동
+        currentSkill = Skills.ArrowShot;
 
         // 대기 시간
-        currentSkill = Skills.ArrowShot;
         State = CreatureState.Skill;
         yield return new WaitForSeconds(ArrowCoolTime);
         State = CreatureState.Idle;

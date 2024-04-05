@@ -1,0 +1,24 @@
+{
+  "skills": [
+    {
+      "id": "1",
+      "name": "melee",
+      "cooldown": "0.3",
+      "damage": "10",
+      "skillType": "SkillAuto"
+    },
+    {
+      "id": "2",
+      "name": "arrow",
+      "cooldown": "0.2",
+      "damage": "5",
+      "skillType": "SkillProjectile",
+      "projectile": {
+        "name": "화살",
+        "speed": "10.0",
+        "range": "10",
+        "prefab": "Creature/Arrow"
+      }
+    }
+  ]
+} 
