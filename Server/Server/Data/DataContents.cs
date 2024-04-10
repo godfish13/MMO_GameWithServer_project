@@ -16,6 +16,7 @@ namespace Server.Data
         public int maxHp;
         public int totalExp;
         public int attack;
+        public int speed;
     }
 
     [Serializable]

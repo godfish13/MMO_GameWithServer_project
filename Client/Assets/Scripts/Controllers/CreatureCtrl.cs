@@ -14,8 +14,26 @@ public class CreatureCtrl : MonoBehaviour
 
     [SerializeField] private Vector3Int _CellPosition = new Vector3Int();   // inspector 내에서 CellPos 관찰을 위한 디버그용 따로 작동에 쓰진않음
 
+    StatInfo _stat = new StatInfo();
+    public StatInfo Stat
+    {
+        get { return _stat; }
+        set
+        {
+            if (_stat.Equals(value))
+                return;
 
-    protected float _speed = 5.0f;
+            _stat.Hp = value.Hp;
+            _stat.MaxHp = value.MaxHp;
+            _stat.Speed = value.Speed;
+        }
+    }
+    public float Speed      // 자주사용할듯하므로 하나 빼놔줌
+    {
+        get { return Stat.Speed; }
+        set { Stat.Speed = value; }
+    }
+
     protected float yoffset = 0.5f;   // Cell 칸 중앙에 스프라이트 위치가 맞도록 개별로 지정 
 
     protected bool _updated = false;  // 더티 플래그 : 실제로 업데이트 되었는지 체크하기 위해 둔 변수
@@ -262,14 +280,14 @@ public class CreatureCtrl : MonoBehaviour
 
         // 도착 여부 체크
         float dist = moveDir.magnitude;
-        if (dist < _speed * Time.deltaTime) // 이동거리가 한번에 이동 가능한 거리보다 짧은경우 도착했다고 인정
+        if (dist < Speed * Time.deltaTime) // 이동거리가 한번에 이동 가능한 거리보다 짧은경우 도착했다고 인정
         {           
             transform.position = destPos;
             CalculateDestPos();             // 입력된 키에 따른 다음 목표 지점 지정           
         }
         else
         {
-            transform.position += moveDir.normalized * _speed * Time.deltaTime;
+            transform.position += moveDir.normalized * Speed * Time.deltaTime;
             State = CreatureState.Moving;
         }
     }

@@ -15,12 +15,21 @@ namespace Server.Game
         }
 
         public GameRoom MyRoom { get; set; }    //플레이어가 현재 속해있는 GameRoom
+
         public ObjectInfo Info { get; set; } = new ObjectInfo();
         public PositionInfo PosInfo { get; private set; } = new PositionInfo();
+        public StatInfo Stat { get; private set; } = new StatInfo();
+
+        public float Speed
+        {
+            get { return Stat.Speed; }
+            set { Stat.Speed = value; }
+        }
 
         public GameObject() 
         {
             Info.PosInfo = PosInfo;
+            Info.StatInfo = Stat;
         }
 
         public Vector2Int CellPos
@@ -62,6 +71,11 @@ namespace Server.Game
             }
 
             return cellPos;
+        }
+
+        public virtual void OnDamaged(GameObject attacker, int damage)
+        {
+
         }
     }
 }

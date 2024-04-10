@@ -32,6 +32,8 @@ public class ObjectMgr
                 myPlayerCtrl = go.GetComponent<MyPlayerCtrl>();
                 myPlayerCtrl.Id = info.ObjectId;
                 myPlayerCtrl.PosInfo = info.PosInfo;
+                myPlayerCtrl.Stat = info.StatInfo;
+
                 myPlayerCtrl.SyncPos();     // 서버상 위치와 유니티상 위치 동기화
             }
             else
@@ -43,6 +45,8 @@ public class ObjectMgr
                 PlayerCtrl pc = go.GetComponent<PlayerCtrl>();
                 pc.Id = info.ObjectId;
                 pc.PosInfo = info.PosInfo;
+                pc.Stat = info.StatInfo;
+
                 pc.SyncPos();        // 서버상 위치와 유니티상 위치 동기화
             }
         }
@@ -57,8 +61,9 @@ public class ObjectMgr
             _objects.Add(info.ObjectId, go);
 
             ArrowCtrl ac = go.GetComponent<ArrowCtrl>();
-            ac.Dir = info.PosInfo.MoveDir;
-            ac.CellPos = new Vector3Int(info.PosInfo.PosX, info.PosInfo.PosY, 0);
+            ac.PosInfo = info.PosInfo;
+            ac.Stat = info.StatInfo;
+
             ac.SyncPos();
         }
     }

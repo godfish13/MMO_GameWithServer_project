@@ -22,7 +22,7 @@ namespace Server.Game
             if (_nextMoveTick >= Environment.TickCount64)   // TickCount64 : millisecond 기준
                 return;
 
-            long tick = (long)(1000 / Data.projectile.speed);   // == 0.01
+            long tick = (long)(1000 / Data.projectile.speed);   // speed = 10으로 설정해줬으므로 == 0.01
             _nextMoveTick = Environment.TickCount64 + tick;     // 0.01초당 1칸씩 움직이도록 속도 조정
 
             Vector2Int destPos = GetFrontCellPos();
@@ -43,11 +43,14 @@ namespace Server.Game
                 if (target != null)
                 {
                     // Todo 피격판정
-                
+                    target.OnDamaged(this, Data.damage);    // Owner의 정보또한 Arrow내에 있으므로 this로 넘겨줌
+                    Console.WriteLine($"Arrow Dmg : {Data.damage}");
                 }
                 // 소멸
                 MyRoom.LeaveGame(ObjectId);
             }
         }
+
+        
     }
 }
