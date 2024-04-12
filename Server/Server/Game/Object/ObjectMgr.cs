@@ -50,6 +50,12 @@ namespace Server.Game
             return (GameObjectType)type;
         }
 
+        public static int GetDecimalId(int id)
+        {
+            int DecimalId = (id) & 0xFFFFFF;
+            return DecimalId;
+        }
+
         public bool RemovePlayer(int objectId)
         {
             GameObjectType objectType = GetObjectTypebyId(objectId);

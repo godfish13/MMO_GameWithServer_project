@@ -208,7 +208,8 @@ namespace Server.Game
                             GameObject target = Map.FindObjectInCellPos(skillTargetPos);
                             if (target != null)
                             {
-                                Console.WriteLine($"Hitted GameObject {target.ObjectId}");
+                                target.OnDamaged(player, player.Stat.Attack);
+                                Console.WriteLine($"Hitted GameObject {ObjectMgr.GetDecimalId(target.ObjectId)}");
                             }
                         }
                         break;

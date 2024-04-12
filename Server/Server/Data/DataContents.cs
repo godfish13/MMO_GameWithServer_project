@@ -7,34 +7,29 @@ namespace Server.Data
 {
     #region Stat
     // public or [SerializeField] 선언해야지 JSON에서 데이터 받아올 수 있음
-    // 각 항목의 이름이랑 JSON 파일 내 항목의 이름이 꼭 같아야 데이터 받아올 수 있음
-    // 자료형 또한 주의!
-    [Serializable]      // 메모리에 들고있는 정보를 파일로 변환시키기 위해 필요한 선언 // 그냥 써라...
-    public class Stat
-    {
-        public int level;
-        public int maxHp;
-        public int totalExp;
-        public int attack;
-        public int speed;
-    }
-
+    // 깔끔하게 Protocol을 바로 연동시켜둠 단, Skill에서처럼 해두면 가시성의 편리함도 있을 듯
     [Serializable]
-    public class StatData : ILoader<int, Stat>
+    public class StatData : ILoader<int, StatInfo>
     {
-        public List<Stat> stats = new List<Stat>();     // !!!!!!중요!!!!!! JSON파일에서 받아오려는 list와 이름이 꼭!!! 같아야함
+        public List<StatInfo> stats = new List<StatInfo>();     // !!!!!!중요!!!!!! JSON파일에서 받아오려는 list와 이름이 꼭!!! 같아야함
 
-        public Dictionary<int, Stat> MakeDict()
+        public Dictionary<int, StatInfo> MakeDict()
         {
-            Dictionary<int, Stat> dict = new Dictionary<int, Stat>();
-            foreach (Stat stat in stats)
-                dict.Add(stat.level, stat);
+            Dictionary<int, StatInfo> dict = new Dictionary<int, StatInfo>();
+            foreach (StatInfo stat in stats)
+            {
+                stat.Hp = stat.MaxHp;
+                dict.Add(stat.Level, stat);
+            }
+                
             return dict;
         }
     }
     #endregion
 
     #region Skill
+    // 각 항목의 이름이랑 JSON 파일 내 항목의 이름이 꼭 같아야 데이터 받아올 수 있음
+    // 자료형 또한 주의!
     [Serializable]
     public class Skill
     {

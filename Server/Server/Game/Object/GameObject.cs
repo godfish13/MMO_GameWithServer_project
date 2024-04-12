@@ -75,6 +75,23 @@ namespace Server.Game
 
         public virtual void OnDamaged(GameObject attacker, int damage)
         {
+            Stat.Hp = Math.Max(Stat.Hp - damage, 0);    // 체력이 0보다 작아지지않도록 Math.Max로 한줄로 가능
+
+            S_ChangeHp changeHpPacket = new S_ChangeHp();   // Hp 변동 패킷 방송
+            changeHpPacket.ObjectId = ObjectId;
+            changeHpPacket.Hp = Stat.Hp;
+            changeHpPacket.DeltaHp = damage;
+            MyRoom.BroadCast(changeHpPacket);
+
+            if (Stat.Hp <= 0)
+            {
+                Stat.Hp = 0;
+                OnDead(attacker);
+            }
+        }
+
+        public virtual void OnDead(GameObject attacker)
+        {
 
         }
     }

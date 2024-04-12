@@ -72,4 +72,23 @@ class PacketHandler
 
         pc.useSkill(skillPacket.SkillInfo.SkillId);
     }
+
+    public static void S_ChangeHpHandler(PacketSession session, IMessage packet)
+    {
+        S_ChangeHp changeHpPacket = packet as S_ChangeHp;
+        //ServerSession serverSession = session as ServerSession;
+
+        GameObject go = Managers.objectMgr.FindGameObjectbyId(changeHpPacket.ObjectId);    // 맞은 오브젝트 서치
+        if (go == null)
+            return;
+
+        CreatureCtrl cc = go.GetComponent<CreatureCtrl>();
+        if (cc == null)
+            return;
+
+        cc.Stat.Hp = changeHpPacket.Hp;
+        Debug.Log($"{ObjectMgr.GetDecimalId(cc.Id)} player get {changeHpPacket.DeltaHp} damage");
+        Debug.Log($"{ObjectMgr.GetDecimalId(cc.Id)} player Hp : {cc.Stat.Hp}");
+        //Todo Ui
+    }
 }

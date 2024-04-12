@@ -10,6 +10,7 @@ using Google.Protobuf.Protocol;
 using Google.Protobuf;
 using System.Diagnostics;
 using Server.Game;
+using Server.Data;
 
 namespace Server
 {
@@ -45,9 +46,15 @@ namespace Server
 				myPlayer.Info.PosInfo.MoveDir = MoveDir.Down;
 				myPlayer.Info.PosInfo.PosX = 0;
 				myPlayer.Info.PosInfo.PosY = 0;
+
+				StatInfo _stat = null;									// StatJson으로 불러놓은 player정보 넣기
+				DataMgr.StatDictionary.TryGetValue(key: 1, out _stat);	// 처음 접속하는것이므로 레벨1로 하드코딩
+				myPlayer.Stat.MergeFrom(_stat);
+
                 myPlayer.mySession = this;
             }
             #endregion           
+
             RoomMgr.Instance.Find(1).EnterGame(myPlayer);
             Console.WriteLine($"{myPlayer.Info.Name} has entered to GameRoom_{RoomMgr.Instance.Find(1).RoomId}");
         }

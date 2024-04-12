@@ -4,22 +4,22 @@
       "level": "1",
       "maxHp": "200",
       "attack": "20",
-      "totalExp": "0",
-      "speed": "5"
+      "speed": "5",
+      "totalExp": "0"
     },
     {
       "level": "2",
       "maxHp": "250",
       "attack": "25",
-      "totalExp": "10",
-      "speed": "7"
+      "speed": "7",
+      "totalExp": "10"
     },
     {
       "level": "3",
       "maxHp": "300",
       "attack": "30",
-      "totalExp": "20",
-      "speed": "10"
+      "speed": "10",
+      "totalExp": "20"
     }
   ]
 } 

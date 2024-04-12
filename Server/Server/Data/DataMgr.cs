@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Google.Protobuf.Protocol;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -12,12 +13,12 @@ namespace Server.Data
 
     public class DataMgr
     {
-        public static Dictionary<int, Stat> StatDictionary { get; private set; } = new Dictionary<int, Stat>();
+        public static Dictionary<int, StatInfo> StatDictionary { get; private set; } = new Dictionary<int, StatInfo>();
         public static Dictionary<int, Skill> SkillDictionary { get; private set; } = new Dictionary<int, Skill>();
 
         public static void LoadData()
         {
-            StatDictionary = LoadJson<StatData, int, Stat>("StatData").MakeDict();
+            StatDictionary = LoadJson<StatData, int, StatInfo>("StatData").MakeDict();
             SkillDictionary = LoadJson<SkillData, int, Skill>("SkillData").MakeDict();
         }
 

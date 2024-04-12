@@ -1,3 +1,4 @@
+using Google.Protobuf.Protocol;
 using JetBrains.Annotations;
 using System;
 using System.Collections;
@@ -12,12 +13,12 @@ public interface ILoader<key, value>            // DataContents에서 활용
 
 public class DataMgr
 {
-    public Dictionary<int, Stat> StatDictionary { get; private set; } = new Dictionary<int, Stat>();
+    public Dictionary<int, StatInfo> StatDictionary { get; private set; } = new Dictionary<int, StatInfo>();
     public Dictionary<int, Skill> SkillDictionary { get; private set; } = new Dictionary<int, Skill>();
 
     public void init()
     {
-        StatDictionary = LoadJson<StatData, int, Stat>("StatData").MakeDict();
+        StatDictionary = LoadJson<StatData, int, StatInfo>("StatData").MakeDict();
         SkillDictionary = LoadJson<SkillData, int, Skill>("SkillData").MakeDict();
     }
 

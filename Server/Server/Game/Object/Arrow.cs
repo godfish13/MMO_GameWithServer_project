@@ -35,7 +35,7 @@ namespace Server.Game
                 movePacket.PosInfo = PosInfo;
                 MyRoom.BroadCast(movePacket);
 
-                Console.WriteLine("Arrow moving");
+                //Console.WriteLine("Arrow moving");
             }
             else
             {
@@ -43,14 +43,11 @@ namespace Server.Game
                 if (target != null)
                 {
                     // Todo 피격판정
-                    target.OnDamaged(this, Data.damage);    // Owner의 정보또한 Arrow내에 있으므로 this로 넘겨줌
-                    Console.WriteLine($"Arrow Dmg : {Data.damage}");
+                    target.OnDamaged(this, Data.damage + Owner.Stat.Attack);    // Owner의 정보또한 Arrow내에 있으므로 this로 넘겨줌
                 }
                 // 소멸
                 MyRoom.LeaveGame(ObjectId);
             }
-        }
-
-        
+        }       
     }
 }

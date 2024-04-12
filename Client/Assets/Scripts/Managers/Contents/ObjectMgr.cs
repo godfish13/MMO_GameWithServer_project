@@ -68,6 +68,12 @@ public class ObjectMgr
         }
     }
 
+    public static int GetDecimalId(int id)
+    {
+        int DecimalId = (id) & 0xFFFFFF;
+        return DecimalId;
+    }
+
     public void RemoveMyPlayer()
     {
         if (myPlayerCtrl = null)
