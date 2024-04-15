@@ -46,6 +46,7 @@ public class MonsterCtrl : CreatureCtrl
     protected override void Init()
     {
         base.Init();
+        AddHpBar();
 
         State = CreatureState.Idle;
         Dir = MoveDir.Down;

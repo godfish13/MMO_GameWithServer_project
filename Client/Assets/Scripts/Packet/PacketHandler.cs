@@ -86,9 +86,9 @@ class PacketHandler
         if (cc == null)
             return;
 
-        cc.Stat.Hp = changeHpPacket.Hp;
+        cc.Hp = changeHpPacket.Hp;
         Debug.Log($"{ObjectMgr.GetDecimalId(cc.Id)} player get {changeHpPacket.DeltaHp} damage");
         Debug.Log($"{ObjectMgr.GetDecimalId(cc.Id)} player Hp : {cc.Stat.Hp}");
-        //Todo Ui
+        
     }
 }

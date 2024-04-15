@@ -21,6 +21,7 @@ public class PlayerCtrl : CreatureCtrl
     {
         yoffset = 0.7f;
         base.Init();
+        AddHpBar();
     }
 
     protected override void UpdateAnim()    // Skills에 따른 애니메이션 변경을 위해 override

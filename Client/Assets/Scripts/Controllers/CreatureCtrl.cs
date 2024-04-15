@@ -9,6 +9,8 @@ public class CreatureCtrl : MonoBehaviour
 {
     // Player, Monster, etc ... ctrl base class
 
+    [SerializeField] HpBar _hpBar;
+
     [SerializeField] private int _id;
     public int Id { get { return _id; } set { _id = value; } }
 
@@ -26,12 +28,24 @@ public class CreatureCtrl : MonoBehaviour
             _stat.Hp = value.Hp;
             _stat.MaxHp = value.MaxHp;
             _stat.Speed = value.Speed;
+            UpdateHpBar();
         }
     }
+
     public float Speed      // 자주사용할듯하므로 하나 빼놔줌
     {
         get { return Stat.Speed; }
         set { Stat.Speed = value; }
+    }
+
+    public int Hp
+    {
+        get { return Stat.Hp; }
+        set 
+        { 
+            Stat.Hp = value;
+            UpdateHpBar();
+        }
     }
 
     protected float yoffset = 0.5f;   // Cell 칸 중앙에 스프라이트 위치가 맞도록 개별로 지정 
@@ -52,6 +66,30 @@ public class CreatureCtrl : MonoBehaviour
             Dir = value.MoveDir;
             CellPos = new Vector3Int(value.PosX, value.PosY, 0);
         }
+    }
+
+    protected void AddHpBar()
+    {
+        GameObject go = Managers.resourceMgr.Instantiate("UI/HpBar", transform);
+        go.transform.localPosition = new Vector3(0, 0.5f, 0);
+        go.name = "HpBar";
+        _hpBar = go.GetComponent<HpBar>();
+        UpdateHpBar();
+    }
+
+    void UpdateHpBar()
+    {
+        if (_hpBar == null)
+        {
+            //Debug.Log("Cant find HpBar!");
+            return;
+        }
+          
+        float ratio = 0.0f;
+        if (Stat.MaxHp > 0) // 나누는값이 0 이하면 크래시이므로 오류체크
+            ratio = (float)Hp / Stat.MaxHp;
+
+        _hpBar.SetHpBar(ratio);
     }
 
     public void SyncPos()
