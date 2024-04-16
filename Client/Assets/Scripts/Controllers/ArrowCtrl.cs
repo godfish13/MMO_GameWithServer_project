@@ -1,10 +1,7 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using static Define;
 using Google.Protobuf.Protocol;
 
-public class ArrowCtrl : CreatureCtrl
+public class ArrowCtrl : BaseCtrl
 {
     protected override void Init()
     {

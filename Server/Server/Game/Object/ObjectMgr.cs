@@ -23,11 +23,11 @@ namespace Server.Game
 
             lock (_lock)
             {
-                gameObject.ObjectId = GenerateId(gameObject.ObjectType);
+                gameObject.Id = GenerateId(gameObject.ObjectType);
 
                 if (gameObject.ObjectType == GameObjectType.Player)
                 {
-                    _players.Add(gameObject.ObjectId, gameObject as Player);
+                    _players.Add(gameObject.Id, gameObject as Player);
                 }
             }
 

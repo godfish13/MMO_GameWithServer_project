@@ -8,7 +8,7 @@ namespace Server.Game
     public class GameObject
     {
         public GameObjectType ObjectType { get; protected set; } = GameObjectType.None;
-        public int ObjectId
+        public int Id
         {
             get { return Info.ObjectId; }
             set { Info.ObjectId = value; }
@@ -78,7 +78,7 @@ namespace Server.Game
             Stat.Hp = Math.Max(Stat.Hp - damage, 0);    // 체력이 0보다 작아지지않도록 Math.Max로 한줄로 가능
 
             S_ChangeHp changeHpPacket = new S_ChangeHp();   // Hp 변동 패킷 방송
-            changeHpPacket.ObjectId = ObjectId;
+            changeHpPacket.ObjectId = Id;
             changeHpPacket.Hp = Stat.Hp;
             changeHpPacket.DeltaHp = damage;
             MyRoom.BroadCast(changeHpPacket);
@@ -92,7 +92,22 @@ namespace Server.Game
 
         public virtual void OnDead(GameObject attacker)
         {
+            S_OnDead diePacket = new S_OnDead();
+            diePacket.ObjectId = this.Id;
+            diePacket.AttackerId = attacker.Id;
+            MyRoom.BroadCast(diePacket);
 
+            GameRoom room = MyRoom; // LeaveGame에서 MyRoom = null 되므로 잠깐 긁어와서 사용하기위해 tmp로 하나 선언
+            room.LeaveGame(Id);   // 일단 추방
+
+            // 오브젝트 상태 리셋
+            Stat.Hp = Stat.MaxHp;   
+            PosInfo.State = CreatureState.Idle;
+            PosInfo.MoveDir = MoveDir.Down;
+            PosInfo.PosX = 0;
+            PosInfo.PosY = 0;
+
+            room.EnterGame(this);   // 리셋 후 재접속
         }
     }
 }

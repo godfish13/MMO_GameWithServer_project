@@ -31,7 +31,7 @@ namespace Server.Game
                 CellPos = destPos;
 
                 S_Move movePacket = new S_Move();
-                movePacket.ObjectId = ObjectId;
+                movePacket.ObjectId = Id;
                 movePacket.PosInfo = PosInfo;
                 MyRoom.BroadCast(movePacket);
 
@@ -46,7 +46,7 @@ namespace Server.Game
                     target.OnDamaged(this, Data.damage + Owner.Stat.Attack);    // Owner의 정보또한 Arrow내에 있으므로 this로 넘겨줌
                 }
                 // 소멸
-                MyRoom.LeaveGame(ObjectId);
+                MyRoom.LeaveGame(Id);
             }
         }       
     }

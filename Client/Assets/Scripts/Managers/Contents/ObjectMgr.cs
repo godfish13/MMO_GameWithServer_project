@@ -74,15 +74,6 @@ public class ObjectMgr
         return DecimalId;
     }
 
-    public void RemoveMyPlayer()
-    {
-        if (myPlayerCtrl = null)
-            return;
-
-        Remove(myPlayerCtrl.Id);
-        myPlayerCtrl = null;
-    }
-
     public void Remove(int Id) 
     {
         GameObject go = FindGameObjectbyId(Id);
@@ -93,7 +84,7 @@ public class ObjectMgr
         Managers.resourceMgr.Destroy(go);
     }
 
-    public GameObject SearchPos(Vector3Int cellPos) // 입력한 Cell position에 cc오브젝트가 있으면 해당 오브젝트를 return
+    public GameObject FindCreatureInCellPos(Vector3Int cellPos) // 입력한 Cell position에 cc오브젝트가 있으면 해당 오브젝트를 return
     {
         foreach (GameObject obj in _objects.Values)
         {
@@ -135,5 +126,6 @@ public class ObjectMgr
             Managers.resourceMgr.Destroy(obj);
         }
         _objects.Clear();
+        myPlayerCtrl = null;
     }
 }

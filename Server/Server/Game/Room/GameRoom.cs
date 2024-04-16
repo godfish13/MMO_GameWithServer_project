@@ -40,16 +40,18 @@ namespace Server.Game
             if (newObject == null)
                 return;
 
-            GameObjectType type = ObjectMgr.GetObjectTypebyId(newObject.ObjectId);
+            GameObjectType type = ObjectMgr.GetObjectTypebyId(newObject.Id);
             
             lock (_lock)
             {
                 if (type == GameObjectType.Player)
                 {
                     Player newPlayer = newObject as Player;
-                    _players.Add(newPlayer.ObjectId, newPlayer);
+                    _players.Add(newPlayer.Id, newPlayer);
                     newPlayer.MyRoom = this;
 
+                    Map.ApplyMove(newPlayer, new Vector2Int(newPlayer.CellPos.x, newPlayer.CellPos.y)); // 접속순간 처음 위치로 초기화
+                                                                                        // 안해주면 위치 인식이 안되서 안움직이면 collider판정 안됨
                     #region player 입장 성공시 Client의 player 본인에게 데이터 전송 
                     // player 본인의 Info 전송
                     S_EnterGame enterPacket = new S_EnterGame();    
@@ -60,22 +62,30 @@ namespace Server.Game
                     S_Spawn OthersSPacket = new S_Spawn(); 
                     foreach (Player p in _players.Values)
                     {
-                        if (newPlayer != p)
+                        if (newPlayer != p)     // 자신 제외
                             OthersSPacket.ObjectList.Add(p.Info);
                     }
+
+                    foreach (Monster m in _monsters.Values)
+                        OthersSPacket.ObjectList.Add(m.Info);
+
+                    foreach (Projectile p in _projectiles.Values)
+                        OthersSPacket.ObjectList.Add(p.Info);
+
                     newPlayer.mySession.Send(OthersSPacket);                   
                     #endregion
                 }
                 else if (type == GameObjectType.Monster)
                 {
                     Monster newMonster = newObject as Monster;
-                    _monsters.Add(newMonster.ObjectId, newMonster);
+                    _monsters.Add(newMonster.Id, newMonster);
                     newMonster.MyRoom = this;
+                    Map.ApplyMove(newMonster, new Vector2Int(newMonster.CellPos.x, newMonster.CellPos.y));
                 }
                 else if (type == GameObjectType.Projectile) 
                 {
                     Projectile newProjectile = newObject as Projectile;
-                    _projectiles.Add(newProjectile.ObjectId, newProjectile);
+                    _projectiles.Add(newProjectile.Id, newProjectile);
                     newProjectile.MyRoom = this;
                 }
 
@@ -85,7 +95,7 @@ namespace Server.Game
 
                 foreach (Player player in _players.Values)
                 {
-                    if (player.ObjectId != newObject.ObjectId)
+                    if (player.Id != newObject.Id)
                         player.mySession.Send(spawnPacket);
                 }              
                 #endregion
@@ -138,7 +148,7 @@ namespace Server.Game
                     despawnPacket.ObjectIdList.Add(objectId);
                     foreach (Player player in _players.Values)
                     {
-                        if (player.ObjectId != objectId)
+                        if (player.Id != objectId)
                             player.mySession.Send(despawnPacket);
                     }
                 }
@@ -209,7 +219,7 @@ namespace Server.Game
                             if (target != null)
                             {
                                 target.OnDamaged(player, player.Stat.Attack);
-                                Console.WriteLine($"Hitted GameObject {ObjectMgr.GetDecimalId(target.ObjectId)}");
+                                Console.WriteLine($"Hitted GameObject {ObjectMgr.GetDecimalId(target.Id)}");
                             }
                         }
                         break;

@@ -20,7 +20,7 @@ class PacketHandler
     public static void S_LeaveGameHandler(PacketSession session, IMessage packet)
     {
         S_LeaveGame leaveGamePacket = packet as S_LeaveGame;
-        Managers.objectMgr.RemoveMyPlayer();
+        Managers.objectMgr.Clear();
     }
 
     public static void S_SpawnHandler(PacketSession session, IMessage packet)
@@ -50,11 +50,11 @@ class PacketHandler
         if (go == null)
             return;
 
-        CreatureCtrl cc = go.GetComponent<CreatureCtrl>();
-        if (cc == null)
+        BaseCtrl bc = go.GetComponent<BaseCtrl>();
+        if (bc == null)
             return;
 
-        cc.PosInfo = movePacket.PosInfo;
+        bc.PosInfo = movePacket.PosInfo;
     }
 
     public static void S_SkillHandler(PacketSession session, IMessage packet)
@@ -88,7 +88,24 @@ class PacketHandler
 
         cc.Hp = changeHpPacket.Hp;
         Debug.Log($"{ObjectMgr.GetDecimalId(cc.Id)} player get {changeHpPacket.DeltaHp} damage");
-        Debug.Log($"{ObjectMgr.GetDecimalId(cc.Id)} player Hp : {cc.Stat.Hp}");
-        
+        Debug.Log($"{ObjectMgr.GetDecimalId(cc.Id)} player Hp : {cc.Stat.Hp}"); 
+    }
+
+    public static void S_OnDeadHandler(PacketSession session, IMessage packet)
+    {
+        S_OnDead diePacket = packet as S_OnDead;
+        //ServerSession serverSession = session as ServerSession;
+
+        GameObject go = Managers.objectMgr.FindGameObjectbyId(diePacket.ObjectId);    // 맞은 오브젝트 서치
+        if (go == null)
+            return;
+
+        CreatureCtrl cc = go.GetComponent<CreatureCtrl>();
+        if (cc == null)
+            return;
+
+        cc.Hp = 0;  // 혹시 죽었는데 변수에의해 Hp != 0인 버그 제거
+        cc.OnDead();
+
     }
 }

@@ -144,7 +144,7 @@ public class MyPlayerCtrl : PlayerCtrl
 
         if (Managers.mapMgr.CanGo(destPos))     // 이동 가능한 좌표인지 체크 후 이동
         {
-            if (Managers.objectMgr.SearchPos(destPos) == null)
+            if (Managers.objectMgr.FindCreatureInCellPos(destPos) == null)
             {
                 CellPos = destPos;
             }

@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using static Define;
 using Google.Protobuf.Protocol;
 
 public class MonsterCtrl : CreatureCtrl
@@ -46,7 +45,6 @@ public class MonsterCtrl : CreatureCtrl
     protected override void Init()
     {
         base.Init();
-        AddHpBar();
 
         State = CreatureState.Idle;
         Dir = MoveDir.Down;
@@ -116,7 +114,7 @@ public class MonsterCtrl : CreatureCtrl
 
         Dir = GetDirfromVector(moveCellDir);
 
-        if (Managers.mapMgr.CanGo(nextPos) && Managers.objectMgr.SearchPos(nextPos) == null)  // 이동 가능한 좌표인지 체크 후 이동
+        if (Managers.mapMgr.CanGo(nextPos) && Managers.objectMgr.FindCreatureInCellPos(nextPos) == null)  // 이동 가능한 좌표인지 체크 후 이동
         {
             CellPos = nextPos;
             //Debug.Log("CanGo!");
@@ -130,13 +128,7 @@ public class MonsterCtrl : CreatureCtrl
 
     public override void OnDamaged()
     {
-        //피격 이펙트 재생
-        GameObject de = Managers.resourceMgr.Instantiate("Effect/DeathBoom");   // 이펙트 재생
-        de.transform.position = transform.position;
-        de.GetComponent<Animator>().Play("DeathBoom");
-        Managers.resourceMgr.Destroy(de, 0.4f);
-
-        // 사망 ㅜㅜ
+        // 일단 한대맞음 바로 사망 수정 todo
         Managers.objectMgr.Remove(Id);
         Managers.resourceMgr.Destroy(gameObject);
     }
@@ -152,7 +144,7 @@ public class MonsterCtrl : CreatureCtrl
             int yRange = Random.Range(-3, 3);
             Vector3Int randPos = CellPos + new Vector3Int(xRange, yRange, 0);
 
-            if (Managers.mapMgr.CanGo(randPos) && Managers.objectMgr.SearchPos(randPos) == null)    // 랜덤위치 CanGo, 오브젝트 유무 체크
+            if (Managers.mapMgr.CanGo(randPos) && Managers.objectMgr.FindCreatureInCellPos(randPos) == null)    // 랜덤위치 CanGo, 오브젝트 유무 체크
             {
                 _randomdestCellPos = randPos;
                 State = CreatureState.Moving;
@@ -190,7 +182,7 @@ public class MonsterCtrl : CreatureCtrl
     IEnumerator coPunchSkill()
     {
         // 피격 판정
-        GameObject go = Managers.objectMgr.SearchPos(GetFrontCellPos());
+        GameObject go = Managers.objectMgr.FindCreatureInCellPos(GetFrontCellPos());
         if (go != null)
         {
             Debug.Log(go.name);
