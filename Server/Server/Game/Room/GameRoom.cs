@@ -22,12 +22,23 @@ namespace Server.Game
         public void Init(int mapId)
         {
             Map.LoadMap(mapId);
+
+            // tmp monster init
+            Monster monster = ObjectMgr.Instance.Add<Monster>();
+            monster.Info.Name = "Monster";
+            monster.CellPos = new Vector2Int(-5, -5);
+            EnterGame(monster);
         }
 
         public void Update()
         {
             lock (_lock)
             {
+                foreach (Monster m in _monsters.Values)
+                {
+                    m.Update();
+                }
+
                 foreach (Projectile p in _projectiles.Values) 
                 {
                     p.Update();
@@ -243,6 +254,16 @@ namespace Server.Game
                         break;
                 }
             }
+        }
+
+        public Player FindPlayer(Func<GameObject, bool> condition)  // 가장 원시적으로 플레이어 전부 탐색, condition에 맞는 player return
+        {
+            foreach (Player p in _players.Values)
+            {
+                if (condition.Invoke(p))
+                    return p;
+            }
+            return null;
         }
 
         public void BroadCast(IMessage packet)

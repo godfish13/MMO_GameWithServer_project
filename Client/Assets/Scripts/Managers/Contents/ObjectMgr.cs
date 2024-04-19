@@ -52,7 +52,16 @@ public class ObjectMgr
         }
         else if (objectType == GameObjectType.Monster)
         {
-            // Todo
+            GameObject go = Managers.resourceMgr.Instantiate("Creature/Monster");
+            go.name = info.Name;
+            _objects.Add(info.ObjectId, go);
+
+            MonsterCtrl mc = go.GetComponent<MonsterCtrl>();
+            mc.Id = info.ObjectId;
+            mc.PosInfo = info.PosInfo;
+            mc.Stat = info.StatInfo;
+            
+            mc.SyncPos();        // 서버상 위치와 유니티상 위치 동기화
         }
         else if (objectType == GameObjectType.Projectile)
         {

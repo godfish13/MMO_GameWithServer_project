@@ -51,6 +51,17 @@ namespace Server.Game
         {
             return new Vector2Int(a.x + b.x, a.y + b.y);
         }
+
+        public static Vector2Int operator -(Vector2Int a, Vector2Int b)
+        {
+            return new Vector2Int(a.x - b.x, a.y - b.y);
+        }
+
+        public float Magnitude { get { return (float)Math.Sqrt(sqrMagnitude); } }
+        public int sqrMagnitude { get { return x * x + y * y; } }   // 대각선길이^2
+
+        public int CellDistFromZero { get { return Math.Abs(x) + Math.Abs(y); } }   // 셀간 거리로 상하/좌우 길이의 절대값 더해준 길이
+                                                                                    // 방향벡터를 구하고 넣어서 사용할것이므로 zero부터의 거리로 명명
     }
 
     public class Map
@@ -163,7 +174,7 @@ namespace Server.Game
         int[] _deltaX = new int[] { 0, 0, -1, 1 };
         int[] _cost = new int[] { 10, 10, 10, 10 };
 
-        public List<Vector2Int> FindPath(Vector2Int startCellPos, Vector2Int destCellPos, bool ignoreDestCollision = false) // ignoreDestCollsion : 목표지점에 Collsion있는것 무시할지말지 결정
+        public List<Vector2Int> FindPath(Vector2Int startCellPos, Vector2Int destCellPos, bool CheckObjectsInPath = false) // ignoreDestCollsion : 목표지점에 Collsion있는것 무시할지말지 결정
         {
             List<Pos> path = new List<Pos>();
             // 점수 매기기
@@ -218,9 +229,9 @@ namespace Server.Game
 
                     // 유효 범위를 벗어났으면 스킵
                     // 벽으로 막혀서 갈 수 없으면 스킵
-                    if (!ignoreDestCollision || next.Y != dest.Y || next.X != dest.X)
+                    if (next.Y != dest.Y || next.X != dest.X)
                     {
-                        if (CanGo(Pos2Cell(next)) == false) // CellPos
+                        if (CanGo(Pos2Cell(next), CheckObjectsInPath) == false) // CellPos
                             continue;
                     }
 

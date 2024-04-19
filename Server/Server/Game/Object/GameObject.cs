@@ -26,6 +26,18 @@ namespace Server.Game
             set { Stat.Speed = value; }
         }
 
+        public MoveDir Dir
+        {
+            get { return PosInfo.MoveDir; }
+            set { PosInfo.MoveDir = value; }
+        }
+
+        public CreatureState State
+        {
+            get { return PosInfo.State; }
+            set { PosInfo.State = value; }
+        }
+
         public GameObject() 
         {
             Info.PosInfo = PosInfo;
@@ -43,6 +55,11 @@ namespace Server.Game
                 Info.PosInfo.PosX = value.x;
                 Info.PosInfo.PosY = value.y;
             }
+        }
+
+        public virtual void Update()
+        {
+
         }
 
         public Vector2Int GetFrontCellPos()     // 바로 자기앞 Cell Pos 가져오도록 wrap해둠 // Arrow 전진 등에 사용하기 편하게
@@ -71,6 +88,18 @@ namespace Server.Game
             }
 
             return cellPos;
+        }
+
+        public static MoveDir GetDirfromVector(Vector2Int dir)
+        {
+            if (dir.y > 0)
+                return MoveDir.Up;
+            else if (dir.x > 0)
+                return MoveDir.Right;
+            else if (dir.x < 0)
+                return MoveDir.Left;
+            else
+                return MoveDir.Down;
         }
 
         public virtual void OnDamaged(GameObject attacker, int damage)

@@ -12,7 +12,7 @@ namespace Server.Game
         object _lock = new object();
         Dictionary<int, Player> _players = new Dictionary<int, Player>();
 
-        // 플레이어 아이디 하나 딸랑 담기에 int는 너무 큼 그러므로 수정예정
+        // 플레이어 아이디 하나 딸랑 담기에 int는 너무 큼 그러므로 비트 분할ㅐ서 사용
         // int = 4 byte = 32 bit 이므로 나눠서 사용
         // [unused 1-bit] [Type 7-bit] [Id 24-bit]  //포트폴리오 제작 과정 수업 기록 2 - server연동 8)화살 파트 참고
         int _counter = 0;

@@ -20,6 +20,5 @@ namespace Server.Data
             string text = File.ReadAllText("config.json");  // config파일을 Server.exe랑 같은 위치에 둘것임으로 이게 경로 끝
             Config = Newtonsoft.Json.JsonConvert.DeserializeObject<ServerConfig>(text);
         }
-
     }
 }
