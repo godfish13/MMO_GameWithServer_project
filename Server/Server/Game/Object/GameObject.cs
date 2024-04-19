@@ -26,6 +26,12 @@ namespace Server.Game
             set { Stat.Speed = value; }
         }
 
+        public int Hp
+        {
+            get { return Stat.Hp; }
+            set { Stat.Hp = Math.Clamp(value, 0, Stat.MaxHp); }
+        }
+
         public MoveDir Dir
         {
             get { return PosInfo.MoveDir; }
@@ -114,7 +120,6 @@ namespace Server.Game
 
             if (Stat.Hp <= 0)
             {
-                Stat.Hp = 0;
                 OnDead(attacker);
             }
         }

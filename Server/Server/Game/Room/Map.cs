@@ -287,11 +287,6 @@ namespace Server.Game
             return new Vector2Int(pos.X + MinX, MaxY - pos.Y);
         }
 
-        internal void ApplyLeave(Monster monster)
-        {
-            throw new NotImplementedException();
-        }
-
         #endregion
     }
 }

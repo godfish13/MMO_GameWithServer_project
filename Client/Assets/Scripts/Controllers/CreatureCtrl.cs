@@ -77,4 +77,9 @@ public class CreatureCtrl : BaseCtrl
         de.GetComponent<Animator>().Play("DeathBoom");
         Managers.resourceMgr.Destroy(de, 0.4f);
     }
+
+    public virtual void UseSkill(int skillId)
+    {
+
+    }
 }

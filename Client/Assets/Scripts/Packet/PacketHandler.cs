@@ -62,15 +62,22 @@ class PacketHandler
         S_Skill skillPacket = packet as S_Skill;
         //ServerSession serverSession = session as ServerSession;
 
-        GameObject go = Managers.objectMgr.FindGameObjectbyId(skillPacket.ObjectId);    // 스킬 쓴 플레이어 서치
+        //Debug.Log($"{skillPacket.ObjectId} used Skill");
+        GameObject go = Managers.objectMgr.FindGameObjectbyId(skillPacket.ObjectId);    // 스킬 쓴 오브젝트 서치
         if (go == null)
+        {
+            Debug.Log("null go");
             return;
-
-        PlayerCtrl pc = go.GetComponent<PlayerCtrl>();
-        if (pc == null)
+        }
+            
+        CreatureCtrl cc = go.GetComponent<CreatureCtrl>();
+        if (cc == null)
+        {
+            Debug.Log("null cc");
             return;
-
-        pc.useSkill(skillPacket.SkillInfo.SkillId);
+        }
+            
+        cc.UseSkill(skillPacket.SkillInfo.SkillId);
     }
 
     public static void S_ChangeHpHandler(PacketSession session, IMessage packet)

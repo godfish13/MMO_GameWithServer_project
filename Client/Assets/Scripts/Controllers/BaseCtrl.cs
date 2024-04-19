@@ -12,7 +12,10 @@ public class BaseCtrl : MonoBehaviour
     [SerializeField] private int _id;
     public int Id { get { return _id; } set { _id = value; } }
 
-    [SerializeField] protected Vector3Int _CellPosition = new Vector3Int();   // inspector 내에서 CellPos 관찰을 위한 디버그용 따로 작동에 쓰진않음
+    // inspector 내에서 관찰을 위한 디버그용 따로 작동에 쓰진않음
+    [SerializeField] protected Vector3Int _CellPosition = new Vector3Int();   
+    [SerializeField] protected CreatureState _CreatureState = new CreatureState();
+    [SerializeField] protected MoveDir _MoveDir = new MoveDir();
 
     StatInfo _stat = new StatInfo();
     public virtual StatInfo Stat
@@ -99,18 +102,11 @@ public class BaseCtrl : MonoBehaviour
             PosInfo.State = value;
             UpdateAnim();
             _updated = true;
+
+            _CreatureState = State;
         }
     }
 
-    [SerializeField]
-    private MoveDir _dir
-    {
-        get { return _dir; }
-        set
-        {
-            _dir = value;
-        }
-    }
     public MoveDir Dir      // 현재 상태 설정과 애니메이션을 동시에 변경되도록 프로퍼티 설정
     {
         get { return PosInfo.MoveDir; }
@@ -123,6 +119,7 @@ public class BaseCtrl : MonoBehaviour
 
             UpdateAnim();   // _dir 변화 시 애니메이션 업데이트
             _updated = true;
+            _MoveDir = Dir;
         }
     }
 
@@ -163,6 +160,9 @@ public class BaseCtrl : MonoBehaviour
 
     protected virtual void UpdateAnim()   // Arrow 등 Animation이 없는 Ctrl에서 내용물 없게 override 할 수 있도록 virtual로 선언
     {
+        if (_animator == null || _spriteRenderer == null)   // 각각이 아직 초기화 안된상태면 return
+            return;
+
         if (State == CreatureState.Idle)
         {
             switch (Dir)
@@ -252,8 +252,6 @@ public class BaseCtrl : MonoBehaviour
         _animator = gameObject.GetComponent<Animator>();
         _spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
 
-        State = CreatureState.Idle;
-        Dir = MoveDir.Down;
         UpdateAnim();
     }
 

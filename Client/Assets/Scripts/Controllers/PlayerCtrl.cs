@@ -132,7 +132,7 @@ public class PlayerCtrl : CreatureCtrl
     }
 
 
-    public void useSkill(int skillId)
+    public override void UseSkill(int skillId)
     {
         if (skillId == 1)
         {
