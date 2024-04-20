@@ -41,16 +41,12 @@ namespace Server
 			_listener.Init(endPoint, () => { return SessionManager.Instance.Generate(); });
 			Console.WriteLine("Listening...");
 
-			//FlushRoom();
-			//JobTimer.Instance.Push(FlushRoom);
-
+			// Todo JobTimer
 			while (true)
 			{
-				//JobTimer.Instance.Flush();
-
-				//Todo - JobQueue로 최적화 예정
-				RoomMgr.Instance.Find(1).Update();
-				//Thread.Sleep(100);
+				GameRoom gameRoom = RoomMgr.Instance.Find(1);
+				gameRoom.Push(gameRoom.Update);
+				Thread.Sleep(10);
 			}
 		}
 	}

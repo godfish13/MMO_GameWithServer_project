@@ -46,7 +46,7 @@ namespace Server.Game
                     target.OnDamaged(this, Data.damage + Owner.Stat.Attack);    // Owner의 정보또한 Arrow내에 있으므로 this로 넘겨줌
                 }
                 // 소멸
-                MyRoom.LeaveGame(Id);
+                MyRoom.Push(MyRoom.LeaveGame, Id);
             }
         }       
     }

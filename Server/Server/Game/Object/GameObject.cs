@@ -110,6 +110,9 @@ namespace Server.Game
 
         public virtual void OnDamaged(GameObject attacker, int damage)
         {
+            if (MyRoom == null)
+                return;
+
             Stat.Hp = Math.Max(Stat.Hp - damage, 0);    // 체력이 0보다 작아지지않도록 Math.Max로 한줄로 가능
 
             S_ChangeHp changeHpPacket = new S_ChangeHp();   // Hp 변동 패킷 방송
@@ -117,7 +120,7 @@ namespace Server.Game
             changeHpPacket.Hp = Stat.Hp;
             changeHpPacket.DeltaHp = damage;
             MyRoom.BroadCast(changeHpPacket);
-
+    
             if (Stat.Hp <= 0)
             {
                 OnDead(attacker);
@@ -126,13 +129,16 @@ namespace Server.Game
 
         public virtual void OnDead(GameObject attacker)
         {
+            if (MyRoom == null)
+                return;
+
             S_OnDead diePacket = new S_OnDead();
             diePacket.ObjectId = this.Id;
             diePacket.AttackerId = attacker.Id;
             MyRoom.BroadCast(diePacket);
 
-            GameRoom room = MyRoom; // LeaveGame에서 MyRoom = null 되므로 잠깐 긁어와서 사용하기위해 tmp로 하나 선언
-            room.LeaveGame(Id);   // 일단 추방
+            GameRoom room = MyRoom; // LeaveGame에서 MyRoom = null 되므로 잠깐 긁어와서 사용하기위해 tmp로 하나 선언          
+            room.LeaveGame(Id); // 일단 추방
 
             // 오브젝트 상태 리셋
             Stat.Hp = Stat.MaxHp;   
@@ -141,7 +147,10 @@ namespace Server.Game
             PosInfo.PosX = 0;
             PosInfo.PosY = 0;
 
-            room.EnterGame(this);   // 리셋 후 재접속
+            room.EnterGame(this);    // 리셋 후 재접속
+            // LeaveGame ~ EnterGame파트는 GameObject 클래스가 어차피 GameRoom내에서 실행되는 파트이므로 굳이 Push안해줘도 됨
+            // 순차적으로 실행되어야함으로 이부분은 Push없이 바로 실행되도록 해줌
+            // 만일 불편하게 느껴지면 오브젝트 상태 리셋 파트도 Job으로 따로 만들어주고 해당 Job을 Push해주는것도 좋음
         }
     }
 }

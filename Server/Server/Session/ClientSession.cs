@@ -53,9 +53,10 @@ namespace Server
 
                 myPlayer.mySession = this;
             }
-            #endregion           
+			#endregion
 
-            RoomMgr.Instance.Find(1).EnterGame(myPlayer);
+			GameRoom gameRoom = RoomMgr.Instance.Find(1);
+			gameRoom.Push(gameRoom.EnterGame, myPlayer);
             Console.WriteLine($"{myPlayer.Info.Name} has entered to GameRoom_{RoomMgr.Instance.Find(1).RoomId}");
         }
 
@@ -69,7 +70,9 @@ namespace Server
 		{
 			SessionManager.Instance.Remove(this);
 
-            RoomMgr.Instance.Find(1).LeaveGame(myPlayer.Info.ObjectId);
+			GameRoom gameRoom = RoomMgr.Instance.Find(1);
+			gameRoom.Push(gameRoom.LeaveGame, myPlayer.Info.ObjectId);
+			
             Console.WriteLine($"OnDisconnected : {endPoint}");
 		}
 

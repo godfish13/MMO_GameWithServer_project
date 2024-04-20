@@ -26,7 +26,7 @@ class PacketHandler
 
 		//Todo 검증(클라이언트가 잘못된 정보 보내는지?)
 
-		Room.HandleMove(player, movePacket);
+		Room.Push(Room.HandleMove, player, movePacket);
 	}
 
 	public static void C_SkillHandler(PacketSession session, IMessage packet)
@@ -42,6 +42,6 @@ class PacketHandler
         if (Room == null)               // 얘는 GameRoom.LeaveGame에서 실제로 null로 밀어주기도 함으로 더위험함!! 더 주의해야하는부분
             return;
 
-		Room.HandleSkill(player, skillPacket);
+		Room.Push(Room.HandleSkill, player, skillPacket);
     }
 }
