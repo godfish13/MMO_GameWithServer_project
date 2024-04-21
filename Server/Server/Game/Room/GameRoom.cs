@@ -27,8 +27,17 @@ namespace Server.Game
             monster.Info.Name = "Monster";
             monster.CellPos = new Vector2Int(-5, -5);
             Push(EnterGame, monster);
+
+            //TestTimer();
         }
 
+        /*void TestTimer()
+        {
+            Console.WriteLine("Testing...");
+            PushDelay(100, TestTimer);
+        }*/
+
+        // 주기적으로 호출되는 사실상 Server의 1프레임 단위
         public void Update()
         {
             foreach (Monster m in _monsters.Values)
@@ -40,6 +49,8 @@ namespace Server.Game
             {
                 p.Update();
             }
+
+            base.Flush();
         }
 
         public void EnterGame(GameObject newObject)
@@ -131,9 +142,9 @@ namespace Server.Game
                 Monster monster = null;
                 if (_monsters.Remove(objectId, out monster) == false)
                     return;
-
-                monster.MyRoom = null;
+                
                 Map.ApplyLeave(monster);
+                monster.MyRoom = null;  // Player와 마찬가지로 null체크 회피를 위해 ApllyLeaver 후 null로 밀어줌
             }
             else if (type == GameObjectType.Projectile)
             {
@@ -154,8 +165,7 @@ namespace Server.Game
                         player.mySession.Send(despawnPacket);
                 }
             }
-            #endregion
-            
+            #endregion            
         }
 
         public void HandleMove(Player player, C_Move movePacket)

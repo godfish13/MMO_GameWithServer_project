@@ -50,6 +50,9 @@ class PacketHandler
         if (go == null)
             return;
 
+        if (Managers.objectMgr.myPlayerCtrl.Id == movePacket.ObjectId)  // 자신 PosInfo는 클라이언트상 정보를 따름
+            return;
+
         BaseCtrl bc = go.GetComponent<BaseCtrl>();
         if (bc == null)
             return;
